@@ -1,0 +1,33 @@
+/* Styles for image-processing.md (revealjs). */
+
+.reveal {
+  font-size: 32px;
+}
+
+.reveal h1, .reveal h2 {
+  color: #1f3a68;
+}
+
+.reveal .slides section h2 {
+  border-bottom: 2px solid #c8d3e6;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+}
+
+/* Code blocks: larger than the revealjs default, and no max height */
+.reveal div.sourceCode pre code,
+.reveal pre code {
+  font-size: 1.35em;
+  line-height: 1.35;
+  max-height: none;
+}
+
+.reveal table {
+  font-size: 0.8em;
+}
+
+/* Small print: sources and notes. Wrap as [text]{.small} */
+.reveal .small {
+  font-size: 0.5em;
+  color: #666;
+}

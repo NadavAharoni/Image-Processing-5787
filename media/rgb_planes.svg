@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="Segoe UI, Arial, sans-serif" font-size="16">
+  <!-- Three stacked planes: B behind, then G, then R in front (drawn back to front) -->
+  <g transform="translate(40,40)">
+    <g transform="translate(60,0)">
+      <rect width="240" height="180" fill="#dbe7ff" stroke="#2050c0" stroke-width="2"/>
+      <text x="246" y="16" fill="#2050c0" font-weight="bold">B</text>
+    </g>
+    <g transform="translate(30,30)">
+      <rect width="240" height="180" fill="#dcf5dc" stroke="#208020" stroke-width="2"/>
+      <text x="246" y="16" fill="#208020" font-weight="bold">G</text>
+    </g>
+    <g transform="translate(0,60)">
+      <rect width="240" height="180" fill="#ffe0e0" stroke="#c02020" stroke-width="2"/>
+      <!-- pixel grid on the front plane -->
+      <g stroke="#c02020" stroke-opacity="0.35">
+        <line x1="40" y1="0" x2="40" y2="180"/><line x1="80" y1="0" x2="80" y2="180"/>
+        <line x1="120" y1="0" x2="120" y2="180"/><line x1="160" y1="0" x2="160" y2="180"/>
+        <line x1="200" y1="0" x2="200" y2="180"/>
+        <line x1="0" y1="45" x2="240" y2="45"/><line x1="0" y1="90" x2="240" y2="90"/>
+        <line x1="0" y1="135" x2="240" y2="135"/>
+      </g>
+      <rect x="80" y="45" width="40" height="45" fill="#c02020" fill-opacity="0.35" stroke="#c02020" stroke-width="2"/>
+      <text x="246" y="16" fill="#c02020" font-weight="bold">R</text>
+      <text x="120" y="205" text-anchor="middle">width = columns (W)</text>
+      <text x="-12" y="90" text-anchor="middle" transform="rotate(-90,-12,90)">height = rows (H)</text>
+    </g>
+  </g>
+  <!-- Right side: explanation -->
+  <g transform="translate(400,70)">
+    <text x="0" y="0" font-size="20" font-weight="bold">img.shape == (H, W, 3)</text>
+    <text x="0" y="40">img[1, 2] → one pixel: 3 bytes</text>
+    <g transform="translate(0,55)" font-family="Consolas, monospace">
+      <rect width="60" height="36" fill="#ffe0e0" stroke="#c02020"/><text x="30" y="24" text-anchor="middle">200</text>
+      <rect x="60" width="60" height="36" fill="#dcf5dc" stroke="#208020"/><text x="90" y="24" text-anchor="middle">120</text>
+      <rect x="120" width="60" height="36" fill="#dbe7ff" stroke="#2050c0"/><text x="150" y="24" text-anchor="middle">30</text>
+    </g>
+    <text x="0" y="130">each value: one byte (uint8), 0..255</text>
+    <text x="0" y="165">img[:, :, 0] → one plane, shape (H, W)</text>
+    <text x="0" y="200" fill="#666">OpenCV stores the planes as B, G, R</text>
+  </g>
+</svg>

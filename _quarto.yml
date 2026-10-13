@@ -1,0 +1,19 @@
+# Defaults for rendering the .md files in this repo with Quarto.
+# Render one file:  quarto render exercises.md   /   quarto render slides/image-processing.md
+# The files keep the .md suffix so they also read well on GitHub.
+project:
+  type: default
+
+# Hebrew, right to left, unless a file says otherwise (the slides set lang: en, dir: ltr).
+lang: he
+dir: rtl
+
+# Keep quotes as typed: smart quotes are wrong in Hebrew.
+from: markdown-smart
+
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 3
+    number-sections: false

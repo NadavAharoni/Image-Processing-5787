@@ -1,0 +1,8 @@
+# Rendered Quarto output (re-render with: quarto render <file>.md)
+*.html
+*_files/
+.quarto/
+__pycache__/
+
+/.quarto/
+**/*.quarto_ipynb
