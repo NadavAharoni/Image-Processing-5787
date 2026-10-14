@@ -1,8 +1,7 @@
 ---
 title: "Digital Image Processing"
-subtitle: "96533.1.1 — Michlala Jerusalem College"
+subtitle: "96533.1.1 — Michlala Jerusalem College, 2026–2027"
 author: "Nadav Aharoni"
-date: "2026–2027"
 lang: en
 dir: ltr
 format:
