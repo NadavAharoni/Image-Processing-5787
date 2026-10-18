@@ -27,15 +27,13 @@
   </g>
   <!-- Right side: explanation -->
   <g transform="translate(400,70)">
-    <text x="0" y="0" font-size="20" font-weight="bold">img.shape == (H, W, 3)</text>
-    <text x="0" y="40">img[1, 2] → one pixel: 3 bytes</text>
+    <text x="0" y="0" font-size="20" font-weight="bold">A 3D array: H × W × 3</text>
+    <text x="0" y="40">one pixel: 3 values (R, G, B)</text>
     <g transform="translate(0,55)" font-family="Consolas, monospace">
       <rect width="60" height="36" fill="#ffe0e0" stroke="#c02020"/><text x="30" y="24" text-anchor="middle">200</text>
       <rect x="60" width="60" height="36" fill="#dcf5dc" stroke="#208020"/><text x="90" y="24" text-anchor="middle">120</text>
       <rect x="120" width="60" height="36" fill="#dbe7ff" stroke="#2050c0"/><text x="150" y="24" text-anchor="middle">30</text>
     </g>
-    <text x="0" y="130">each value: one byte (uint8), 0..255</text>
-    <text x="0" y="165">img[:, :, 0] → one plane, shape (H, W)</text>
-    <text x="0" y="200" fill="#666">OpenCV stores the planes as B, G, R</text>
+    <text x="0" y="130">each value: 0..255</text>
   </g>
 </svg>

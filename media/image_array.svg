@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 310" font-family="Segoe UI, Arial, sans-serif" font-size="16">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <text x="20" y="28" font-size="19" text-anchor="start" font-weight="bold">img: H = 5 rows, W = 4 columns, 3 bytes per pixel</text>
+  <text x="111.0" y="60" font-size="15" text-anchor="middle" fill="#555">0</text>
+  <text x="213.0" y="60" font-size="15" text-anchor="middle" fill="#555">1</text>
+  <text x="315.0" y="60" font-size="15" text-anchor="middle" fill="#555">2</text>
+  <text x="417.0" y="60" font-size="15" text-anchor="middle" fill="#555">3</text>
+  <text x="46" y="96" font-size="15" text-anchor="middle" fill="#555">0</text>
+  <g><rect x="60" y="70" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="77.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">250</text></g>
+  <g><rect x="94" y="70" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="111.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">240</text></g>
+  <g><rect x="128" y="70" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">230</text></g>
+  <g><rect x="162" y="70" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="179.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">220</text></g>
+  <g><rect x="196" y="70" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="213.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">200</text></g>
+  <g><rect x="230" y="70" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="247.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">180</text></g>
+  <g><rect x="264" y="70" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="281.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="298" y="70" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="315.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">140</text></g>
+  <g><rect x="332" y="70" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="349.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">200</text></g>
+  <g><rect x="366" y="70" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="383.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">40</text></g>
+  <g><rect x="400" y="70" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="417.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="434" y="70" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="451.0" y="94.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">160</text></g>
+  <text x="46" y="136" font-size="15" text-anchor="middle" fill="#555">1</text>
+  <g><rect x="60" y="110" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="77.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">230</text></g>
+  <g><rect x="94" y="110" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="111.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">210</text></g>
+  <g><rect x="128" y="110" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">190</text></g>
+  <g><rect x="162" y="110" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="179.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">180</text></g>
+  <g><rect x="196" y="110" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="213.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">150</text></g>
+  <g><rect x="230" y="110" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="247.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="264" y="110" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="281.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">200</text></g>
+  <g><rect x="298" y="110" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="315.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="332" y="110" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="349.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="366" y="110" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="383.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="400" y="110" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="417.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">110</text></g>
+  <g><rect x="434" y="110" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="451.0" y="134.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">170</text></g>
+  <text x="46" y="176" font-size="15" text-anchor="middle" fill="#555">2</text>
+  <g><rect x="60" y="150" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="77.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="94" y="150" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="111.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="128" y="150" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="162" y="150" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="179.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="196" y="150" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="213.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="230" y="150" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="247.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="264" y="150" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="281.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">180</text></g>
+  <g><rect x="298" y="150" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="315.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="332" y="150" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="349.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">20</text></g>
+  <g><rect x="366" y="150" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="383.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="400" y="150" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="417.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="434" y="150" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="451.0" y="174.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <text x="46" y="216" font-size="15" text-anchor="middle" fill="#555">3</text>
+  <g><rect x="60" y="190" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="77.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="94" y="190" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="111.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">50</text></g>
+  <g><rect x="128" y="190" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">40</text></g>
+  <g><rect x="162" y="190" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="179.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">70</text></g>
+  <g><rect x="196" y="190" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="213.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="230" y="190" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="247.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">50</text></g>
+  <g><rect x="264" y="190" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="281.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">160</text></g>
+  <g><rect x="298" y="190" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="315.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="332" y="190" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="349.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="366" y="190" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="383.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="400" y="190" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="417.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">140</text></g>
+  <g><rect x="434" y="190" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="451.0" y="214.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <text x="46" y="256" font-size="15" text-anchor="middle" fill="#555">4</text>
+  <g><rect x="60" y="230" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="77.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="94" y="230" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="111.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="128" y="230" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="162" y="230" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="179.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">50</text></g>
+  <g><rect x="196" y="230" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="213.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">40</text></g>
+  <g><rect x="230" y="230" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="247.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="264" y="230" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="281.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">140</text></g>
+  <g><rect x="298" y="230" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="315.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="332" y="230" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="349.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">20</text></g>
+  <g><rect x="366" y="230" width="34" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="383.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="400" y="230" width="34" height="40" fill="#dcf5dc" stroke="#208020"/><text x="417.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">150</text></g>
+  <g><rect x="434" y="230" width="34" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="451.0" y="254.9" text-anchor="middle" font-size="14" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <rect x="60" y="70" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="162" y="70" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="264" y="70" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="366" y="70" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="60" y="110" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="162" y="110" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="264" y="110" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="366" y="110" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="60" y="150" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="162" y="150" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="264" y="150" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="366" y="150" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="60" y="190" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="162" y="190" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="264" y="190" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="366" y="190" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="60" y="230" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="162" y="230" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="264" y="230" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="366" y="230" width="102" height="40" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="264" y="110" width="102" height="40" fill="none" stroke="#e08000" stroke-width="3.5"/>
+  <text x="264.0" y="294" font-size="15" text-anchor="middle" fill="#555">columns (x)</text>
+  <text x="22" y="170.0" font-size="15" text-anchor="middle" fill="#555" transform="rotate(-90,22,170.0)">rows (y)</text>
+  <text x="500" y="110" font-size="20" text-anchor="start" font-weight="bold">img.shape == (5, 4, 3)</text>
+  <text x="500" y="140" font-size="16" text-anchor="start" >(H, W, 3):</text>
+  <text x="500" y="162" font-size="16" text-anchor="start" >rows, columns, channels</text>
+  <text x="500" y="205" font-size="17" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">img[1, 2] → [200 120 30]</text>
+  <text x="500" y="245" font-size="16" text-anchor="start" >each value: one byte</text>
+  <text x="500" y="267" font-size="16" text-anchor="start" >(uint8), 0..255</text>
+</svg>

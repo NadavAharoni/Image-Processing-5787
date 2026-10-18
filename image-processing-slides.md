@@ -49,9 +49,34 @@ format:
 
 # Images in memory
 
-## An image is an array of numbers
+## An image as a 3D array
 
 ![](media/rgb_planes.svg){width=100%}
+
+## An image is an array of numbers
+
+![](media/image_array.svg){width=100%}
+
+## In memory: one block of bytes
+
+![](media/image_memory.svg){width=100%}
+
+## Three planes: a logical view
+
+![](media/rgb_planes_logical.svg){width=100%}
+
+## One channel is a view
+
+![](media/channel_view.svg){width=100%}
+
+## OpenCV: B, G, R
+
+![](media/bgr_order.svg){width=85%}
+
+- `cv2.imread` gives **B, G, R**: `img[:, :, 0]` is the **blue** channel.
+- Matplotlib expects R, G, B: `cv2.cvtColor(img, cv2.COLOR_BGR2RGB)`.
+- Why? History: OpenCV started at Intel in 1999, when B, G, R was common
+  in cameras and in Windows bitmaps (BMP files store B, G, R). It stayed for compatibility.
 
 ## Three planes, or one
 

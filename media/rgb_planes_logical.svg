@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" font-family="Segoe UI, Arial, sans-serif" font-size="16">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <text x="124.0" y="30" font-size="17" text-anchor="middle" font-family="Consolas, monospace" xml:space="preserve">img[:, :, 0]</text>
+  <text x="124.0" y="50" font-size="15" text-anchor="middle" fill="#c02020" font-weight="bold">R  ·  shape (5, 4)</text>
+  <g><rect x="20" y="60" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="46.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">250</text></g>
+  <g><rect x="72" y="60" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="98.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">220</text></g>
+  <g><rect x="124" y="60" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="150.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="176" y="60" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="202.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">40</text></g>
+  <g><rect x="20" y="100" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="46.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">230</text></g>
+  <g><rect x="72" y="100" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="98.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">180</text></g>
+  <g><rect x="124" y="100" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="150.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">200</text></g>
+  <g><rect x="176" y="100" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="202.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="20" y="140" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="46.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="72" y="140" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="98.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="124" y="140" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="150.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">180</text></g>
+  <g><rect x="176" y="140" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="202.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="20" y="180" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="46.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="72" y="180" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="98.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">70</text></g>
+  <g><rect x="124" y="180" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="150.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">160</text></g>
+  <g><rect x="176" y="180" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="202.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="20" y="220" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="46.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="72" y="220" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="98.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">50</text></g>
+  <g><rect x="124" y="220" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="150.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">140</text></g>
+  <g><rect x="176" y="220" width="52" height="40" fill="#ffe0e0" stroke="#c02020"/><text x="202.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <rect x="124" y="100" width="52" height="40" fill="none" stroke="#e08000" stroke-width="3.5"/>
+  <text x="372.0" y="30" font-size="17" text-anchor="middle" font-family="Consolas, monospace" xml:space="preserve">img[:, :, 1]</text>
+  <text x="372.0" y="50" font-size="15" text-anchor="middle" fill="#208020" font-weight="bold">G  ·  shape (5, 4)</text>
+  <g><rect x="268" y="60" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="294.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">240</text></g>
+  <g><rect x="320" y="60" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="346.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">200</text></g>
+  <g><rect x="372" y="60" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="398.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">140</text></g>
+  <g><rect x="424" y="60" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="450.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="268" y="100" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="294.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">210</text></g>
+  <g><rect x="320" y="100" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="346.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">150</text></g>
+  <g><rect x="372" y="100" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="398.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="424" y="100" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="450.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">110</text></g>
+  <g><rect x="268" y="140" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="294.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="320" y="140" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="346.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="372" y="140" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="398.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">100</text></g>
+  <g><rect x="424" y="140" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="450.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="268" y="180" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="294.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">50</text></g>
+  <g><rect x="320" y="180" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="346.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="372" y="180" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="398.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <g><rect x="424" y="180" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="450.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">140</text></g>
+  <g><rect x="268" y="220" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="294.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="320" y="220" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="346.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">40</text></g>
+  <g><rect x="372" y="220" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="398.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="424" y="220" width="52" height="40" fill="#dcf5dc" stroke="#208020"/><text x="450.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">150</text></g>
+  <rect x="372" y="100" width="52" height="40" fill="none" stroke="#e08000" stroke-width="3.5"/>
+  <text x="620.0" y="30" font-size="17" text-anchor="middle" font-family="Consolas, monospace" xml:space="preserve">img[:, :, 2]</text>
+  <text x="620.0" y="50" font-size="15" text-anchor="middle" fill="#2050c0" font-weight="bold">B  ·  shape (5, 4)</text>
+  <g><rect x="516" y="60" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="542.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">230</text></g>
+  <g><rect x="568" y="60" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="594.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">180</text></g>
+  <g><rect x="620" y="60" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="646.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">200</text></g>
+  <g><rect x="672" y="60" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="698.0" y="85.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">160</text></g>
+  <g><rect x="516" y="100" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="542.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">190</text></g>
+  <g><rect x="568" y="100" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="594.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">120</text></g>
+  <g><rect x="620" y="100" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="646.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="672" y="100" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="698.0" y="125.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">170</text></g>
+  <g><rect x="516" y="140" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="542.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="568" y="140" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="594.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="620" y="140" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="646.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">20</text></g>
+  <g><rect x="672" y="140" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="698.0" y="165.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">60</text></g>
+  <g><rect x="516" y="180" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="542.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">40</text></g>
+  <g><rect x="568" y="180" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="594.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">50</text></g>
+  <g><rect x="620" y="180" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="646.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="672" y="180" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="698.0" y="205.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">80</text></g>
+  <g><rect x="516" y="220" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="542.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="568" y="220" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="594.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text></g>
+  <g><rect x="620" y="220" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="646.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">20</text></g>
+  <g><rect x="672" y="220" width="52" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="698.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">90</text></g>
+  <rect x="620" y="100" width="52" height="40" fill="none" stroke="#e08000" stroke-width="3.5"/>
+  <text x="380" y="296" font-size="17" text-anchor="middle" >Convenient for thinking: one (H, W) plane per color.</text>
+  <text x="380" y="322" font-size="17" text-anchor="middle" fill="#a03000">But the bytes are not stored this way.</text>
+</svg>
