@@ -1,5 +1,5 @@
 # Defaults for rendering the .md files in this repo with Quarto.
-# Render one file:  quarto render exercises.md   /   quarto render slides/image-processing.md
+# Render one file:  quarto render exercises.md   /   quarto render slides/image-processing-slides.md
 # The files keep the .md suffix so they also read well on GitHub.
 project:
   type: default
