@@ -302,7 +302,15 @@ plt.show()
 ```python
 img + 100                  # NumPy: wraps around (modulo 256)
 cv2.add(img, 100)          # OpenCV: saturates — above 255 becomes 255
-np.clip(img.astype(np.int16) + 100, 0, 255).astype(np.uint8)   # NumPy, done right
+```
+
+NumPy, done right:
+
+```python
+img16 = img.astype(np.int16)           # room for values above 255
+bright16 = img16 + 100                 # int16: no wrap-around
+clipped = np.clip(bright16, 0, 255)    # back into 0..255 (still int16)
+bright = clipped.astype(np.uint8)      # an image again
 ```
 
 - Why `int16`? Because `uint8 + 100` already wrapped around before `clip` could see it.

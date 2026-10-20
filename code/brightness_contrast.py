@@ -17,11 +17,17 @@ k = 1.8      # contrast factor
 
 bright_np = img + b                       # uint8 + int: wraps around modulo 256
 bright_cv = cv2.add(img, b)               # OpenCV saturates: values above 255 become 255
-bright_clip = np.clip(img.astype(np.int16) + b, 0, 255).astype(np.uint8)
+
+# NumPy, done right: compute in a bigger type, clip, then convert back
+img16 = img.astype(np.int16)              # room for values above 255
+bright16 = img16 + b                      # int16: no wrap-around
+clipped = np.clip(bright16, 0, 255)       # back into 0..255 (still int16)
+bright_clip = clipped.astype(np.uint8)    # an image again
 
 contrast_wrap = img * 2                   # uint8 * int: wraps around modulo 256
 contrast_float = img * k                  # float64, values may be above 255
-contrast_clip = np.clip(contrast_float, 0, 255).astype(np.uint8)
+contrast_clipped = np.clip(contrast_float, 0, 255)
+contrast_clip = contrast_clipped.astype(np.uint8)
 
 images = [
     (img, "original"),
