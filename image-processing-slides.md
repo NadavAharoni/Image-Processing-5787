@@ -173,6 +173,32 @@ a.max(axis=1) # max of each row
 
 No loops: one expression works on the whole array.
 
+## `max(axis=...)`: the axis you name disappears
+
+![](media/axis_2d.svg){width=100%}
+
+- The axis you give is the one that is **collapsed**: all values along it become one value.
+- `axis=0` runs down the rows → one result per column. `axis=1` runs along a row → one result per row.
+- The same for `min`, `sum`, `mean`, ...
+
+## A 3D array: `axis=1`
+
+![](media/axis_3d_box.svg){width=100%}
+
+- Shape `(3, 4, 2)` without axis 1 → `(3, 2)`. Rule: remove the named axis from the shape.
+- For an image `img` with shape `(H, W, 3)`:
+
+```python
+img.max(axis=2)        # (H, W): the brightest channel of each pixel
+img.max(axis=(0, 1))   # (3,):   the max of each channel
+```
+
+## `axis=1`, with numbers
+
+![](media/axis_3d_numbers.svg){width=100%}
+
+Each depth slice `a[:, :, d]` is a 2D plane — like a color channel `img[:, :, c]`.
+
 ## Overflow: `uint8` wraps around
 
 ```python
@@ -207,7 +233,7 @@ c = np.clip(b, 0, 255).astype(np.uint8)      # [[ 15 150 255] [ 75 225 255]]
 - `np.clip` — values below 0 become 0, above 255 become 255.
 - `astype` — converts to another type. Without `clip`, out-of-range values give garbage.
 
-## Class exercise
+## Exercises
 
 Exercises 1–3 in the exercises file.
 
@@ -222,7 +248,7 @@ Exercises 1–3 in the exercises file.
 - **Matplotlib**: plots — and showing images.
 
 ```bash
-pip install numpy opencv-python matplotlib
+pip install numpy opencv-python matplotlib pillow
 ```
 
 ## Reading an image with OpenCV
@@ -286,7 +312,7 @@ np.clip(img.astype(np.int16) + 100, 0, 255).astype(np.uint8)   # NumPy, done rig
 
 ![](media/brightness_contrast.png){height=600}
 
-## Class exercise
+## Exercise
 
 Exercises 4–6 in the exercises file.
 

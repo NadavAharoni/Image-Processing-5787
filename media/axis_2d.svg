@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" font-family="Segoe UI, Arial, sans-serif" font-size="16">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="arr-hl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e08000"/>
+    </marker>
+  </defs>
+  <text x="40" y="30" font-size="20" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve" font-weight="bold">a.max(axis=0)</text>
+  <text x="40" y="56" font-size="16" text-anchor="start" fill="#555">collapses axis 0 (the rows)</text>
+  <rect x="40" y="90" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="69.0" y="115.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">10</text>
+  <rect x="98" y="90" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="127.0" y="115.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">100</text>
+  <rect x="156" y="90" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="185.0" y="115.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">200</text>
+  <rect x="40" y="130" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="69.0" y="155.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">50</text>
+  <rect x="98" y="130" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="127.0" y="155.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">150</text>
+  <rect x="156" y="130" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="185.0" y="155.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">250</text>
+  <rect x="40" y="130" width="58" height="40" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="98" y="130" width="58" height="40" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="156" y="130" width="58" height="40" fill="none" stroke="#e08000" stroke-width="3"/>
+  <line x1="69.0" y1="176" x2="69.0" y2="214" stroke="#e08000" stroke-width="1.8" marker-end="url(#arr-hl)"/>
+  <line x1="127.0" y1="176" x2="127.0" y2="214" stroke="#e08000" stroke-width="1.8" marker-end="url(#arr-hl)"/>
+  <line x1="185.0" y1="176" x2="185.0" y2="214" stroke="#e08000" stroke-width="1.8" marker-end="url(#arr-hl)"/>
+  <rect x="40" y="220" width="58" height="40" fill="#ffe3c2" stroke="#c06000"/><text x="69.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">50</text>
+  <rect x="98" y="220" width="58" height="40" fill="#ffe3c2" stroke="#c06000"/><text x="127.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">150</text>
+  <rect x="156" y="220" width="58" height="40" fill="#ffe3c2" stroke="#c06000"/><text x="185.0" y="245.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">250</text>
+  <text x="40" y="294" font-size="17" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">shape (2, 3) → (3,)</text>
+  <text x="40" y="318" font-size="16" text-anchor="start" fill="#555">one value per column</text>
+  <text x="420" y="30" font-size="20" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve" font-weight="bold">a.max(axis=1)</text>
+  <text x="420" y="56" font-size="16" text-anchor="start" fill="#555">collapses axis 1 (the columns)</text>
+  <rect x="420" y="90" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="449.0" y="115.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">10</text>
+  <rect x="478" y="90" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="507.0" y="115.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">100</text>
+  <rect x="536" y="90" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="565.0" y="115.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">200</text>
+  <rect x="420" y="130" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="449.0" y="155.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">50</text>
+  <rect x="478" y="130" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="507.0" y="155.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">150</text>
+  <rect x="536" y="130" width="58" height="40" fill="#dbe7ff" stroke="#2050c0"/><text x="565.0" y="155.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">250</text>
+  <rect x="536" y="90" width="58" height="40" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="536" y="130" width="58" height="40" fill="none" stroke="#e08000" stroke-width="3"/>
+  <line x1="600" y1="110.0" x2="638" y2="110.0" stroke="#e08000" stroke-width="1.8" marker-end="url(#arr-hl)"/>
+  <line x1="600" y1="150.0" x2="638" y2="150.0" stroke="#e08000" stroke-width="1.8" marker-end="url(#arr-hl)"/>
+  <rect x="644" y="90" width="58" height="40" fill="#ffe3c2" stroke="#c06000"/><text x="673.0" y="115.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">200</text>
+  <rect x="644" y="130" width="58" height="40" fill="#ffe3c2" stroke="#c06000"/><text x="673.0" y="155.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">250</text>
+  <text x="420" y="294" font-size="17" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">shape (2, 3) → (2,)</text>
+  <text x="420" y="318" font-size="16" text-anchor="start" fill="#555">one value per row</text>
+</svg>

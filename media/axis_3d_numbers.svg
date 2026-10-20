@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" font-family="Segoe UI, Arial, sans-serif" font-size="16">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="arr-hl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e08000"/>
+    </marker>
+  </defs>
+  <text x="30" y="30" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">a[:, :, 0]   shape (3, 4)</text>
+  <rect x="30" y="40" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="53.0" y="62.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">12</text>
+  <rect x="76" y="40" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="99.0" y="62.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">85</text>
+  <rect x="122" y="40" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="62.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">40</text>
+  <rect x="168" y="40" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="191.0" y="62.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">7</text>
+  <rect x="30" y="74" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="53.0" y="96.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">63</text>
+  <rect x="76" y="74" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="99.0" y="96.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">21</text>
+  <rect x="122" y="74" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="96.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">90</text>
+  <rect x="168" y="74" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="191.0" y="96.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">35</text>
+  <rect x="30" y="108" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="53.0" y="130.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">30</text>
+  <rect x="76" y="108" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="99.0" y="130.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">58</text>
+  <rect x="122" y="108" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="130.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">16</text>
+  <rect x="168" y="108" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="191.0" y="130.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">72</text>
+  <rect x="76" y="40" width="46" height="34" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="122" y="74" width="46" height="34" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="168" y="108" width="46" height="34" fill="none" stroke="#e08000" stroke-width="3"/>
+  <line x1="222" y1="57.0" x2="276" y2="57.0" stroke="#e08000" stroke-width="2" marker-end="url(#arr-hl)"/>
+  <line x1="222" y1="91.0" x2="276" y2="91.0" stroke="#e08000" stroke-width="2" marker-end="url(#arr-hl)"/>
+  <line x1="222" y1="125.0" x2="276" y2="125.0" stroke="#e08000" stroke-width="2" marker-end="url(#arr-hl)"/>
+  <rect x="284" y="40" width="46" height="34" fill="#ffe3c2" stroke="#c06000"/><text x="307.0" y="62.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">85</text>
+  <rect x="284" y="74" width="46" height="34" fill="#ffe3c2" stroke="#c06000"/><text x="307.0" y="96.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">90</text>
+  <rect x="284" y="108" width="46" height="34" fill="#ffe3c2" stroke="#c06000"/><text x="307.0" y="130.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">72</text>
+  <text x="342" y="97.0" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">r[:, 0]</text>
+  <text x="249" y="160" font-size="13" text-anchor="middle" fill="#555">max of each row</text>
+  <text x="30" y="194" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">a[:, :, 1]   shape (3, 4)</text>
+  <rect x="30" y="204" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="53.0" y="226.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">44</text>
+  <rect x="76" y="204" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="99.0" y="226.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">9</text>
+  <rect x="122" y="204" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="226.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">67</text>
+  <rect x="168" y="204" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="191.0" y="226.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">81</text>
+  <rect x="30" y="238" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="53.0" y="260.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">18</text>
+  <rect x="76" y="238" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="99.0" y="260.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">76</text>
+  <rect x="122" y="238" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="260.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">25</text>
+  <rect x="168" y="238" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="191.0" y="260.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">50</text>
+  <rect x="30" y="272" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="53.0" y="294.6" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, monospace" xml:space="preserve">95</text>
+  <rect x="76" y="272" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="99.0" y="294.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">33</text>
+  <rect x="122" y="272" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="145.0" y="294.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">61</text>
+  <rect x="168" y="272" width="46" height="34" fill="#dbe7ff" stroke="#2050c0"/><text x="191.0" y="294.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">14</text>
+  <rect x="168" y="204" width="46" height="34" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="76" y="238" width="46" height="34" fill="none" stroke="#e08000" stroke-width="3"/>
+  <rect x="30" y="272" width="46" height="34" fill="none" stroke="#e08000" stroke-width="3"/>
+  <line x1="222" y1="221.0" x2="276" y2="221.0" stroke="#e08000" stroke-width="2" marker-end="url(#arr-hl)"/>
+  <line x1="222" y1="255.0" x2="276" y2="255.0" stroke="#e08000" stroke-width="2" marker-end="url(#arr-hl)"/>
+  <line x1="222" y1="289.0" x2="276" y2="289.0" stroke="#e08000" stroke-width="2" marker-end="url(#arr-hl)"/>
+  <rect x="284" y="204" width="46" height="34" fill="#ffe3c2" stroke="#c06000"/><text x="307.0" y="226.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">81</text>
+  <rect x="284" y="238" width="46" height="34" fill="#ffe3c2" stroke="#c06000"/><text x="307.0" y="260.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">76</text>
+  <rect x="284" y="272" width="46" height="34" fill="#ffe3c2" stroke="#c06000"/><text x="307.0" y="294.6" text-anchor="middle" font-size="16" font-family="Consolas, monospace" xml:space="preserve">95</text>
+  <text x="342" y="261.0" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">r[:, 1]</text>
+  <text x="249" y="324" font-size="13" text-anchor="middle" fill="#555">max of each row</text>
+  <text x="480" y="60" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve" font-weight="bold">r = a.max(axis=1)</text>
+  <text x="480" y="88" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">r.shape == (3, 2)</text>
+  <text x="480" y="130" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve">[[85 81]</text>
+  <text x="480" y="154" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve"> [90 76]</text>
+  <text x="480" y="178" font-size="16" text-anchor="start" font-family="Consolas, monospace" xml:space="preserve"> [72 95]]</text>
+</svg>
