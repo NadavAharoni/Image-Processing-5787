@@ -251,6 +251,39 @@ Exercises 1–3 in the exercises file.
 pip install numpy opencv-python matplotlib pillow
 ```
 
+## Command-line arguments: `sys.argv`
+
+```bash
+python ex04.py ../images/ocean.jpg
+```
+
+```python
+import sys
+
+print(sys.argv)          # ['ex04.py', '../images/ocean.jpg']
+filename = sys.argv[1]   # the first argument after the program name
+```
+
+- `sys.argv` is a list of strings: the program name, then each word typed after it.
+- No argument → `sys.argv` is `['ex04.py']`, and `sys.argv[1]` raises `IndexError`.
+- A name with spaces needs quotes: `python ex04.py "my photo.jpg"`.
+- The path is relative to the folder the terminal is in, not to the `.py` file.
+
+## Checking the arguments
+
+```python
+import sys
+
+if len(sys.argv) != 2:
+    print("Usage: python ex04.py <image file>")
+    sys.exit(1)
+
+filename = sys.argv[1]
+```
+
+- `sys.exit(1)` stops the program. A non-zero value means "something went wrong".
+- In VS Code, the ▷ Run button passes no arguments: run the program from the terminal instead.
+
 ## Reading an image with OpenCV
 
 ```python
