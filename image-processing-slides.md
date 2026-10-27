@@ -6,7 +6,7 @@ lang: en
 dir: ltr
 format:
   revealjs:
-    embed-resources: true
+    embed-resources: false   # GitHub Pages: small HTML + a libraries folder that rarely changes
     slide-number: true
     footer: "Digital Image Processing"
     css: slides.css

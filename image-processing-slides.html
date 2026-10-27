@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head>
+<script src="image-processing-slides_files/libs/clipboard/clipboard.min.js"></script>
+<script src="image-processing-slides_files/libs/quarto-html/tabby.min.js"></script>
+<script src="image-processing-slides_files/libs/quarto-html/popper.min.js"></script>
+<script src="image-processing-slides_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="image-processing-slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="image-processing-slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="image-processing-slides_files/libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
+
+  <meta name="author" content="Nadav Aharoni">
+  <title>Digital Image Processing</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="slides.css">
+  <link href="image-processing-slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="image-processing-slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="image-processing-slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="image-processing-slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Digital Image Processing</h1>
+  <p class="subtitle">96533.1.1 — Michlala Jerusalem College, 2026–2027</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Nadav Aharoni 
+</div>
+</div>
+</div>
+
+</section>
+<section>
+<section id="introduction" class="title-slide slide level1 center">
+<h1>Introduction</h1>
+
+</section>
+<section id="the-human-eye" class="slide level2">
+<h2>The human eye</h2>
+
+<img data-src="media/intro_2_1.jpg" style="width:100.0%" class="r-stretch"><p><span class="small">Source: Soroka Medical Center website</span></p>
+</section>
+<section id="the-retina" class="slide level2">
+<h2>The retina</h2>
+<p><img data-src="media/intro_3_1.jpg" height="600"></p>
+</section>
+<section id="sensitivity-to-color" class="slide level2">
+<h2>Sensitivity to color</h2>
+
+<img data-src="media/intro_4_1.png" style="width:80.0%" class="r-stretch"><p><span class="small">Source: researchgate.net/figure/Normalized-spectral-sensitivity-of-retinal-rod-and-cone-cells_fig7_265155524</span></p>
+</section>
+<section id="rgb-color-model" class="slide level2">
+<h2>RGB color model</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img data-src="media/intro_5_1.png" style="width:100.0%"></p>
+</div><div class="column" style="width:70%;">
+<p><img data-src="media/intro_5_2.jpg" style="width:100.0%"></p>
+</div></div>
+</section>
+<section id="rgb-vs-cmyk" class="slide level2">
+<h2>RGB vs CMYK</h2>
+<p><img data-src="media/intro_6_1.png" height="600"></p>
+</section></section>
+<section>
+<section id="images-in-memory" class="title-slide slide level1 center">
+<h1>Images in memory</h1>
+
+</section>
+<section id="an-image-as-a-3d-array" class="slide level2">
+<h2>An image as a 3D array</h2>
+
+<img data-src="media/rgb_planes.svg" style="width:100.0%" class="r-stretch"></section>
+<section id="an-image-is-an-array-of-numbers" class="slide level2">
+<h2>An image is an array of numbers</h2>
+
+<img data-src="media/image_array.svg" style="width:100.0%" class="r-stretch"></section>
+<section id="in-memory-one-block-of-bytes" class="slide level2">
+<h2>In memory: one block of bytes</h2>
+
+<img data-src="media/image_memory.svg" style="width:100.0%" class="r-stretch"></section>
+<section id="three-planes-a-logical-view" class="slide level2">
+<h2>Three planes: a logical view</h2>
+
+<img data-src="media/rgb_planes_logical.svg" style="width:100.0%" class="r-stretch"></section>
+<section id="one-channel-is-a-view" class="slide level2">
+<h2>One channel is a view</h2>
+
+<img data-src="media/channel_view.svg" style="width:100.0%" class="r-stretch"></section>
+<section id="opencv-b-g-r" class="slide level2">
+<h2>OpenCV: B, G, R</h2>
+
+<img data-src="media/bgr_order.svg" style="width:85.0%" class="r-stretch"><ul>
+<li><code>cv2.imread</code> gives <strong>B, G, R</strong>: <code>img[:, :, 0]</code> is the <strong>blue</strong> channel.</li>
+<li>Matplotlib expects R, G, B: <code>cv2.cvtColor(img, cv2.COLOR_BGR2RGB)</code>.</li>
+<li>Why? History: OpenCV started at Intel in 1999, when B, G, R was common in cameras and in Windows bitmaps (BMP files store B, G, R). It stayed for compatibility.</li>
+</ul>
+</section>
+<section id="three-planes-or-one" class="slide level2">
+<h2>Three planes, or one</h2>
+<ul>
+<li>Color image: <code>shape == (H, W, 3)</code> — rows, columns, channels.</li>
+<li>Grayscale image: <code>shape == (H, W)</code> — one plane.</li>
+<li>Rows first: <code>img[row, col]</code> — that is <code>img[y, x]</code>, <strong>not</strong> <code>img[x, y]</code>.</li>
+<li>Size: 1920 × 1080 × 3 = 6,220,800 bytes ≈ 6 MB (before compression).</li>
+<li>JPEG/PNG files are compressed; in memory the image is the full array.</li>
+</ul>
+</section>
+<section id="a-byte" class="slide level2">
+<h2>A byte</h2>
+<ul>
+<li>8 bits → 2<sup>8</sup> = 256 values → <code>0 .. 255</code>.</li>
+<li><code>00000000</code> = 0, <code>11111111</code> = 255.</li>
+<li>0 = no light (black), 255 = full intensity.</li>
+<li>What is 255 + 1 in one byte?</li>
+</ul>
+<div class="fragment">
+<p><code>11111111 + 1 = 1 00000000</code> → the 9th bit does not fit → <strong>0</strong></p>
+</div>
+</section></section>
+<section>
+<section id="numpy" class="title-slide slide level1 center">
+<h1>NumPy</h1>
+
+</section>
+<section id="why-not-python-lists" class="slide level2">
+<h2>Why not Python lists?</h2>
+
+<img data-src="media/list_vs_array.svg" style="width:100.0%" class="r-stretch"></section>
+<section id="why-not-python-loops" class="slide level2">
+<h2>Why not Python loops?</h2>
+<p>Brighten a 300 × 400 color image (360,000 values):</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Python loop</td>
+<td>~100 ms</td>
+</tr>
+<tr class="even">
+<td>NumPy</td>
+<td>~1 ms</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>About 100× faster. A 12-megapixel photo with a loop: <strong>~10 seconds</strong>.</li>
+<li>NumPy runs the loop in compiled C code, over one block of memory of one type.</li>
+<li>See <code>code/loop_vs_numpy.py</code>.</li>
+</ul>
+</section>
+<section id="every-array-has-a-type-dtype" class="slide level2">
+<h2>Every array has a type: <code>dtype</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">200</span>],</span>
+<span id="cb1-4"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">250</span>]], dtype<span class="op">=</span>np.uint8)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>dtype</th>
+<th>bytes</th>
+<th>range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>np.uint8</code></td>
+<td>1</td>
+<td>0 .. 255</td>
+</tr>
+<tr class="even">
+<td><code>np.int16</code></td>
+<td>2</td>
+<td>−32,768 .. 32,767</td>
+</tr>
+<tr class="odd">
+<td><code>np.int32</code></td>
+<td>4</td>
+<td>about ±2.1 billion</td>
+</tr>
+<tr class="even">
+<td><code>np.float32</code></td>
+<td>4</td>
+<td>~7 significant digits</td>
+</tr>
+<tr class="odd">
+<td><code>np.float64</code></td>
+<td>8</td>
+<td>~16 significant digits</td>
+</tr>
+</tbody>
+</table>
+<p>Images are almost always <code>uint8</code>.</p>
+</section>
+<section id="array-attributes" class="slide level2">
+<h2>Array attributes</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a>a.dtype      <span class="co"># uint8</span></span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a>a.shape      <span class="co"># (2, 3)  -&gt; (rows, columns)</span></span>
+<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a>a.ndim       <span class="co"># 2       -&gt; number of dimensions</span></span>
+<span id="cb2-4"><a href="" aria-hidden="true" tabindex="-1"></a>a.size       <span class="co"># 6       -&gt; number of elements</span></span>
+<span id="cb2-5"><a href="" aria-hidden="true" tabindex="-1"></a>a.itemsize   <span class="co"># 1       -&gt; bytes per element</span></span>
+<span id="cb2-6"><a href="" aria-hidden="true" tabindex="-1"></a>a.nbytes     <span class="co"># 6       -&gt; size * itemsize</span></span>
+<span id="cb2-7"><a href="" aria-hidden="true" tabindex="-1"></a>a[<span class="dv">1</span>, <span class="dv">2</span>]      <span class="co"># 250     -&gt; row 1, column 2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a color image: <code>shape == (H, W, 3)</code>, <code>ndim == 3</code>.</p>
+</section>
+<section id="creating-arrays" class="slide level2">
+<h2>Creating arrays</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.zeros((<span class="dv">3</span>, <span class="dv">4</span>), dtype<span class="op">=</span>np.uint8)            <span class="co"># all 0</span></span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>np.ones((<span class="dv">3</span>, <span class="dv">4</span>), dtype<span class="op">=</span>np.float32)           <span class="co"># all 1.0</span></span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a>np.full((<span class="dv">3</span>, <span class="dv">4</span>), <span class="dv">7</span>, dtype<span class="op">=</span>np.uint8)          <span class="co"># all 7</span></span>
+<span id="cb3-4"><a href="" aria-hidden="true" tabindex="-1"></a>np.arange(<span class="dv">12</span>)                               <span class="co"># 0, 1, ..., 11</span></span>
+<span id="cb3-5"><a href="" aria-hidden="true" tabindex="-1"></a>np.arange(<span class="dv">12</span>).reshape(<span class="dv">3</span>, <span class="dv">4</span>)                 <span class="co"># same values, shape (3, 4)</span></span>
+<span id="cb3-6"><a href="" aria-hidden="true" tabindex="-1"></a>np.zeros((<span class="dv">480</span>, <span class="dv">640</span>, <span class="dv">3</span>), dtype<span class="op">=</span>np.uint8)     <span class="co"># a black color image</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="operations-are-elementwise" class="slide level2">
+<h2>Operations are elementwise</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">+</span> <span class="dv">10</span>        <span class="co"># adds 10 to every element</span></span>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">*</span> <span class="dv">2</span>         <span class="co"># multiplies every element</span></span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">+</span> a         <span class="co"># element by element</span></span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a>a.<span class="bu">min</span>(), a.<span class="bu">max</span>(), a.mean(), a.<span class="bu">sum</span>()</span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a>a.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>) <span class="co"># max of each column</span></span>
+<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a>a.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="co"># max of each row</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>No loops: one expression works on the whole array.</p>
+</section>
+<section id="maxaxis...-the-axis-you-name-disappears" class="slide level2">
+<h2><code>max(axis=...)</code>: the axis you name disappears</h2>
+
+<img data-src="media/axis_2d.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>The axis you give is the one that is <strong>collapsed</strong>: all values along it become one value.</li>
+<li><code>axis=0</code> runs down the rows → one result per column. <code>axis=1</code> runs along a row → one result per row.</li>
+<li>The same for <code>min</code>, <code>sum</code>, <code>mean</code>, ...</li>
+</ul>
+</section>
+<section id="a-3d-array-axis1" class="slide level2">
+<h2>A 3D array: <code>axis=1</code></h2>
+
+<img data-src="media/axis_3d_box.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>Shape <code>(3, 4, 2)</code> without axis 1 → <code>(3, 2)</code>. Rule: remove the named axis from the shape.</li>
+<li>For an image <code>img</code> with shape <code>(H, W, 3)</code>:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">2</span>)        <span class="co"># (H, W): the brightest channel of each pixel</span></span>
+<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>(axis<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))   <span class="co"># (3,):   the max of each channel</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="axis1-with-numbers" class="slide level2">
+<h2><code>axis=1</code>, with numbers</h2>
+
+<img data-src="media/axis_3d_numbers.svg" style="width:100.0%" class="r-stretch"><p>Each depth slice <code>a[:, :, d]</code> is a 2D plane — like a color channel <code>img[:, :, c]</code>.</p>
+</section>
+<section id="overflow-uint8-wraps-around" class="slide level2">
+<h2>Overflow: <code>uint8</code> wraps around</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([[<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">200</span>],</span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">250</span>]], dtype<span class="op">=</span>np.uint8)</span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [[ 20 110 210]</span></span>
+<span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#  [ 60 160   4]]     &lt;- 250 + 10 = 260 = 256 + 4</span></span>
+<span id="cb6-6"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">-</span> <span class="dv">20</span></span>
+<span id="cb6-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [[246  80 180]     &lt;- 10 - 20 = -10 = 246 - 256</span></span>
+<span id="cb6-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#  [ 30 130 230]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>The result of <code>uint8 + int</code> is <code>uint8</code>, computed <strong>modulo 256</strong>.</li>
+<li>No error, no warning.</li>
+</ul>
+</section>
+<section id="other-surprises" class="slide level2">
+<h2>Other surprises</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">+</span> <span class="dv">300</span>       <span class="co"># OverflowError: Python integer 300 out of bounds for uint8</span></span>
+<span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">*</span> <span class="fl">1.5</span>       <span class="co"># float64 array: [[ 15. 150. 300.] [ 75. 225. 375.]]</span></span>
+<span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a>a.<span class="bu">sum</span>()       <span class="co"># 760 (NumPy uses a bigger type for sums)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The safe way back to an image:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a <span class="op">*</span> <span class="fl">1.5</span>                                  <span class="co"># float64</span></span>
+<span id="cb8-2"><a href="" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> np.clip(b, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)      <span class="co"># [[ 15 150 255] [ 75 225 255]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>np.clip</code> — values below 0 become 0, above 255 become 255.</li>
+<li><code>astype</code> — converts to another type. Without <code>clip</code>, out-of-range values give garbage.</li>
+</ul>
+</section>
+<section id="exercises" class="slide level2">
+<h2>Exercises</h2>
+<p>Exercises 1–3 in the exercises file.</p>
+</section></section>
+<section>
+<section id="libraries" class="title-slide slide level1 center">
+<h1>Libraries</h1>
+
+</section>
+<section id="python-image-libraries" class="slide level2">
+<h2>Python image libraries</h2>
+<ul>
+<li><strong>Pillow (PIL)</strong>: "object oriented", keeps metadata, easy to install, slower.</li>
+<li><strong>OpenCV (<code>cv2</code>)</strong>: written in C/C++ with a Python wrapper. Industry standard, optimized for speed. Images are NumPy arrays.</li>
+<li><strong>NumPy</strong>: n-dimensional arrays with fast operations.</li>
+<li><strong>Matplotlib</strong>: plots — and showing images.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy opencv-python matplotlib pillow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="command-line-arguments-sys.argv" class="slide level2">
+<h2>Command-line arguments: <code>sys.argv</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex04.py ../images/ocean.jpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sys.argv)          <span class="co"># ['ex04.py', '../images/ocean.jpg']</span></span>
+<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> sys.argv[<span class="dv">1</span>]   <span class="co"># the first argument after the program name</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>sys.argv</code> is a list of strings: the program name, then each word typed after it.</li>
+<li>No argument → <code>sys.argv</code> is <code>['ex04.py']</code>, and <code>sys.argv[1]</code> raises <code>IndexError</code>.</li>
+<li>A name with spaces needs quotes: <code>python ex04.py "my photo.jpg"</code>.</li>
+<li>The path is relative to the folder the terminal is in, not to the <code>.py</code> file.</li>
+</ul>
+</section>
+<section id="checking-the-arguments" class="slide level2">
+<h2>Checking the arguments</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">!=</span> <span class="dv">2</span>:</span>
+<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Usage: python ex04.py &lt;image file&gt;"</span>)</span>
+<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a>    sys.exit(<span class="dv">1</span>)</span>
+<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>sys.exit(1)</code> stops the program. A non-zero value means "something went wrong".</li>
+<li>In VS Code, the ▷ Run button passes no arguments: run the program from the terminal instead.</li>
+</ul>
+</section>
+<section id="reading-an-image-with-opencv" class="slide level2">
+<h2>Reading an image with OpenCV</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> sys.argv[<span class="dv">1</span>]      <span class="co"># check len(sys.argv) first, as before</span></span>
+<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(filename)</span>
+<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"failed to read"</span>, filename)</span>
+<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a>    sys.exit(<span class="dv">1</span>)</span>
+<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(img), img.dtype, img.shape)</span>
+<span id="cb13-10"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;class 'numpy.ndarray'&gt; uint8 (400, 300, 3)</span></span>
+<span id="cb13-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(img[<span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb13-12"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [122 133 117]   &lt;- B, G, R !</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>cv2.imread</code> does <strong>not</strong> raise an error for a missing file — it returns <code>None</code>.</li>
+<li><code>cv2.imread(name, cv2.IMREAD_GRAYSCALE)</code> → 2D array.</li>
+</ul>
+</section>
+<section id="showing-an-image-with-matplotlib" class="slide level2">
+<h2>Showing an image with Matplotlib</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a>rgb <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   <span class="co"># OpenCV: BGR, Matplotlib: RGB</span></span>
+<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a>plt.imshow(rgb)</span>
+<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"rgb.png"</span>)    <span class="co"># save the figure to a file</span></span>
+<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> cv2.imread(filename, cv2.IMREAD_GRAYSCALE)</span>
+<span id="cb14-9"><a href="" aria-hidden="true" tabindex="-1"></a>plt.imshow(gray, cmap<span class="op">=</span><span class="st">"gray"</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">255</span>)</span>
+<span id="cb14-10"><a href="" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Without <code>vmin=0, vmax=255</code>, Matplotlib stretches each gray image to its own min..max — and brightness changes become invisible.</li>
+<li>Call <code>plt.savefig</code> <strong>before</strong> <code>plt.show()</code>: once the window is closed, the figure is gone.</li>
+</ul>
+</section>
+<section id="the-channels" class="slide level2">
+<h2>The channels</h2>
+
+<img data-src="media/show_image.png" style="width:100.0%" class="r-stretch"><p><code>code/show_image.py</code></p>
+</section>
+<section id="brightness-and-contrast" class="slide level2">
+<h2>Brightness and contrast</h2>
+<ul>
+<li><strong>Brightness</strong>: add a constant to every pixel — <code>img + b</code>.</li>
+<li><strong>Contrast</strong>: multiply every pixel by a factor — <code>img * k</code>.</li>
+<li>What happens to pixels that go above 255?</li>
+</ul>
+</section>
+<section id="numpy-vs-opencv" class="slide level2">
+<h2>NumPy vs OpenCV</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">+</span> <span class="dv">100</span>                  <span class="co"># NumPy: wraps around (modulo 256)</span></span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.add(img, <span class="dv">100</span>)          <span class="co"># OpenCV: saturates — above 255 becomes 255</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>NumPy, done right:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a>img16 <span class="op">=</span> img.astype(np.int16)           <span class="co"># room for values above 255</span></span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a>bright16 <span class="op">=</span> img16 <span class="op">+</span> <span class="dv">100</span>                 <span class="co"># int16: no wrap-around</span></span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a>clipped <span class="op">=</span> np.clip(bright16, <span class="dv">0</span>, <span class="dv">255</span>)    <span class="co"># back into 0..255 (still int16)</span></span>
+<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a>bright <span class="op">=</span> clipped.astype(np.uint8)      <span class="co"># an image again</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Why <code>int16</code>? Because <code>uint8 + 100</code> already wrapped around before <code>clip</code> could see it.</li>
+<li><code>code/brightness_contrast.py</code></li>
+</ul>
+</section>
+<section id="the-result" class="slide level2">
+<h2>The result</h2>
+<p><img data-src="media/brightness_contrast.png" height="600"></p>
+</section>
+<section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<p>Exercises 4–6 in the exercises file.</p>
+</section></section>
+<section>
+<section id="indexing-and-vectorization" class="title-slide slide level1 center">
+<h1>Indexing and vectorization</h1>
+
+</section>
+<section id="indexing-and-slicing" class="slide level2">
+<h2>Indexing and slicing</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">10</span>, <span class="dv">20</span>]          <span class="co"># one pixel: [B G R]</span></span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">2</span>]       <span class="co"># one value: the R of that pixel</span></span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>img[:, :, <span class="dv">2</span>]         <span class="co"># the R plane, shape (H, W)</span></span>
+<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">100</span>:<span class="dv">200</span>, <span class="dv">50</span>:<span class="dv">150</span>] <span class="co"># a crop: rows 100..199, columns 50..149</span></span>
+<span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a>img[::<span class="dv">2</span>, ::<span class="dv">2</span>]        <span class="co"># every second row and column: half size</span></span>
+<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>img[::<span class="op">-</span><span class="dv">1</span>, :]         <span class="co"># rows in reverse: upside down</span></span>
+<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a>img[:, ::<span class="op">-</span><span class="dv">1</span>]         <span class="co"># columns in reverse: mirror</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>start:stop:step</code> — like Python lists, but one per dimension.</p>
+</section>
+<section id="views-not-copies" class="slide level2">
+<h2>Views, not copies</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a>crop <span class="op">=</span> img[<span class="dv">100</span>:<span class="dv">200</span>, <span class="dv">50</span>:<span class="dv">150</span>]</span>
+<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a>crop[:] <span class="op">=</span> <span class="dv">0</span>              <span class="co"># img changes too!</span></span>
+<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="" aria-hidden="true" tabindex="-1"></a>crop <span class="op">=</span> img[<span class="dv">100</span>:<span class="dv">200</span>, <span class="dv">50</span>:<span class="dv">150</span>].copy()</span>
+<span id="cb18-5"><a href="" aria-hidden="true" tabindex="-1"></a>crop[:] <span class="op">=</span> <span class="dv">0</span>              <span class="co"># img does not change</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Slicing gives a <strong>view</strong>: a new array object that uses the same memory.</li>
+<li>Fast (nothing is copied), but changes go to the original.</li>
+<li>Use <code>.copy()</code> when you need an independent array.</li>
+</ul>
+</section>
+<section id="broadcasting" class="slide level2">
+<h2>Broadcasting</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a>img.shape                               <span class="co"># (400, 300, 3)</span></span>
+<span id="cb19-2"><a href="" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> np.array([<span class="fl">0.114</span>, <span class="fl">0.587</span>, <span class="fl">0.299</span>])   <span class="co"># B, G, R</span></span>
+<span id="cb19-3"><a href="" aria-hidden="true" tabindex="-1"></a>(img <span class="op">*</span> weights).shape                   <span class="co"># (400, 300, 3)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Shapes are compared from the <strong>last</strong> dimension.</li>
+<li>Sizes must be equal, or one of them must be 1 (or missing).</li>
+<li><code>(400, 300, 3) * (3,)</code> → each pixel's 3 values are multiplied by the 3 weights.</li>
+<li><code>img + 10</code> is broadcasting too: a scalar fits any shape.</li>
+</ul>
+</section>
+<section id="grayscale" class="slide level2">
+<h2>Grayscale</h2>
+<p>The eye is most sensitive to green and least to blue:</p>
+<p><span class="math display">\[Y = 0.299\,R + 0.587\,G + 0.114\,B\]</span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> np.array([<span class="fl">0.114</span>, <span class="fl">0.587</span>, <span class="fl">0.299</span>])          <span class="co"># B, G, R</span></span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> (img <span class="op">*</span> weights).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">2</span>)                 <span class="co"># float64, shape (H, W)</span></span>
+<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> np.clip(gray, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)</span>
+<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>gray_cv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)    <span class="co"># OpenCV: almost the same</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>axis=2</code> — sum over the channels; the result has one dimension less.</p>
+</section>
+<section id="boolean-masks" class="slide level2">
+<h2>Boolean masks</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> gray <span class="op">&gt;</span> <span class="dv">200</span>         <span class="co"># array of True/False, same shape as gray</span></span>
+<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a>mask.<span class="bu">sum</span>()                <span class="co"># how many pixels are brighter than 200</span></span>
+<span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray[mask] <span class="op">=</span> <span class="dv">255</span>          <span class="co"># set only those pixels</span></span>
+<span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a>gray[gray <span class="op">&lt;</span> <span class="dv">50</span>] <span class="op">=</span> <span class="dv">0</span>       <span class="co"># in one line</span></span>
+<span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> np.where(mask, <span class="dv">255</span>, <span class="dv">0</span>).astype(np.uint8)   <span class="co"># if / else for every pixel</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="timing-code" class="slide level2">
+<h2>Timing code</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb22-4"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> brighten_loop(img, <span class="dv">50</span>)</span>
+<span id="cb22-5"><a href="" aria-hidden="true" tabindex="-1"></a>elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> start</span>
+<span id="cb22-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>elapsed <span class="op">*</span> <span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss"> ms"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Measure, don't guess.</li>
+<li>Measure more than once — the first run is often slower.</li>
+<li><code>code/loop_vs_numpy.py</code></li>
+</ul>
+</section>
+<section id="class-exercise" class="slide level2">
+<h2>Class exercise</h2>
+<p>Exercises 7–10 in the exercises file.</p>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Digital Image Processing</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="image-processing-slides_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="image-processing-slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="image-processing-slides_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="image-processing-slides_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
