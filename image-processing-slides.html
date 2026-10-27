@@ -418,15 +418,26 @@ Nadav Aharoni
 
 <img data-src="media/axis_3d_box.svg" style="width:100.0%" class="r-stretch"><ul>
 <li>Shape <code>(3, 4, 2)</code> without axis 1 → <code>(3, 2)</code>. Rule: remove the named axis from the shape.</li>
-<li>For an image <code>img</code> with shape <code>(H, W, 3)</code>:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">2</span>)        <span class="co"># (H, W): the brightest channel of each pixel</span></span>
-<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>(axis<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))   <span class="co"># (3,):   the max of each channel</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="axis1-with-numbers" class="slide level2">
 <h2><code>axis=1</code>, with numbers</h2>
 
 <img data-src="media/axis_3d_numbers.svg" style="width:100.0%" class="r-stretch"><p>Each depth slice <code>a[:, :, d]</code> is a 2D plane — like a color channel <code>img[:, :, c]</code>.</p>
+</section>
+<section id="images-axis-can-be-a-tuple" class="slide level2">
+<h2>Images: <code>axis</code> can be a tuple</h2>
+<p>For an image <code>img</code> with shape <code>(H, W, 3)</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">2</span>)          <span class="co"># (H, W): the brightest channel of each pixel</span></span>
+<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a>img.mean(axis<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))    <span class="co"># (3,):   the mean of each channel (B, G, R)</span></span>
+<span id="cb5-3"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>(axis<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))     <span class="co"># (3,):   the max of each channel</span></span>
+<span id="cb5-4"><a href="" aria-hidden="true" tabindex="-1"></a>img.<span class="bu">max</span>()                <span class="co"># one number: the max of everything</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>axis=(0, 1)</code> collapses rows <strong>and</strong> columns: all H × W values of a channel become one number.</li>
+<li>The result has one value per channel: shape <code>(3,)</code>, a 1D array of 3 values.</li>
+<li><code>img.max(axis=(0, 1))</code> gives the same as <code>img.max(axis=0).max(axis=0)</code>, in one step.</li>
+<li>No <code>axis</code> at all: every axis disappears, and the result is one number.</li>
+</ul>
 </section>
 <section id="overflow-uint8-wraps-around" class="slide level2">
 <h2>Overflow: <code>uint8</code> wraps around</h2>

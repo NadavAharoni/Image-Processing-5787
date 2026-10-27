@@ -186,18 +186,28 @@ No loops: one expression works on the whole array.
 ![](media/axis_3d_box.svg){width=100%}
 
 - Shape `(3, 4, 2)` without axis 1 → `(3, 2)`. Rule: remove the named axis from the shape.
-- For an image `img` with shape `(H, W, 3)`:
-
-```python
-img.max(axis=2)        # (H, W): the brightest channel of each pixel
-img.max(axis=(0, 1))   # (3,):   the max of each channel
-```
 
 ## `axis=1`, with numbers
 
 ![](media/axis_3d_numbers.svg){width=100%}
 
 Each depth slice `a[:, :, d]` is a 2D plane — like a color channel `img[:, :, c]`.
+
+## Images: `axis` can be a tuple
+
+For an image `img` with shape `(H, W, 3)`:
+
+```python
+img.max(axis=2)          # (H, W): the brightest channel of each pixel
+img.mean(axis=(0, 1))    # (3,):   the mean of each channel (B, G, R)
+img.max(axis=(0, 1))     # (3,):   the max of each channel
+img.max()                # one number: the max of everything
+```
+
+- `axis=(0, 1)` collapses rows **and** columns: all H × W values of a channel become one number.
+- The result has one value per channel: shape `(3,)`, a 1D array of 3 values.
+- `img.max(axis=(0, 1))` gives the same as `img.max(axis=0).max(axis=0)`, in one step.
+- No `axis` at all: every axis disappears, and the result is one number.
 
 ## Overflow: `uint8` wraps around
 
