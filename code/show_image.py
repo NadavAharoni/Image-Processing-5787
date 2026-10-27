@@ -6,10 +6,10 @@ import cv2
 import matplotlib.pyplot as plt
 
 if len(sys.argv) != 2:
-    print(f"Usage: python {sys.argv[0]} <string>")
-    exit(1)
+    print(f"Usage: python {sys.argv[0]} <image_file>")
+    sys.exit(1)
 
-filename = sys.argv[1] if len(sys.argv) > 1 else "../images/ocean_300_400.jpg"
+filename = sys.argv[1]
 img = cv2.imread(filename)      # numpy array, channel order is B, G, R
 if img is None:
     print(f"failed to read image from {filename}")
