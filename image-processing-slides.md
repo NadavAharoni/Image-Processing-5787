@@ -287,11 +287,14 @@ filename = sys.argv[1]
 ## Reading an image with OpenCV
 
 ```python
+import sys
 import cv2
 
-img = cv2.imread("ocean.jpg")
+filename = sys.argv[1]      # check len(sys.argv) first, as before
+img = cv2.imread(filename)
 if img is None:
-    print("failed to read the image")
+    print("failed to read", filename)
+    sys.exit(1)
 print(type(img), img.dtype, img.shape)
 # <class 'numpy.ndarray'> uint8 (400, 300, 3)
 print(img[0, 0])
@@ -308,15 +311,17 @@ import matplotlib.pyplot as plt
 
 rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   # OpenCV: BGR, Matplotlib: RGB
 plt.imshow(rgb)
+plt.savefig("rgb.png")    # save the figure to a file
 plt.show()
 
-gray = cv2.imread("ocean.jpg", cv2.IMREAD_GRAYSCALE)
+gray = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
 plt.imshow(gray, cmap="gray", vmin=0, vmax=255)
 plt.show()
 ```
 
 - Without `vmin=0, vmax=255`, Matplotlib stretches each gray image to its own min..max —
   and brightness changes become invisible.
+- Call `plt.savefig` **before** `plt.show()`: once the window is closed, the figure is gone.
 
 ## The channels
 
