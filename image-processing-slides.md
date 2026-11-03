@@ -477,3 +477,461 @@ print(f"{elapsed * 1000:.2f} ms")
 ## Exercises
 
 Exercises 7–10 in the exercises file.
+
+# Point operations
+
+## Point operations
+
+The new value of a pixel depends only on its old value: `out = f(img)`.
+
+![](media/point_ops.svg){width=100%}
+
+- Dashed: `out = img` (no change). Above 255 or below 0: clipped.
+- Brightness moves the line up; contrast makes it steeper.
+
+## Contrast around the mean
+
+```python
+f = img.astype(np.float64)
+m = f.mean()
+out = (f - m) * 1.8 + m                        # stretch around the mean
+out = np.clip(out, 0, 255).astype(np.uint8)
+```
+
+- `img * 1.8` stretches around **0**: the image also gets brighter (mean 123 → 221).
+- `(img - m) * 1.8 + m` keeps the mean: dark gets darker, bright gets brighter.
+
+## Min-max normalization
+
+$$out = \frac{img - min}{max - min} \cdot 255$$
+
+```python
+f = img.astype(np.float64)
+out = (f - f.min()) / (f.max() - f.min()) * 255
+out = np.round(out).astype(np.uint8)            # already 0..255: no clip
+
+out = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)   # OpenCV: the same
+```
+
+- The darkest pixel becomes 0, the brightest becomes 255.
+- One very dark or very bright pixel is enough to spoil it.
+
+## Min-max: the result
+
+![](media/minmax.png){height=600}
+
+## Lookup tables
+
+A `uint8` image has only 256 possible values: compute `f` once for each value, and look it up.
+
+```python
+lut = np.array([0, 10, 20, 30, 40, 50, 60, 70])
+img = np.array([[2, 3],
+                [7, 0]])
+lut[img]
+# [[20 30]
+#  [70  0]]
+```
+
+- An array as an index: each value of `img` picks one entry of `lut`.
+- The result has the shape of `img`.
+
+## Lookup tables for images
+
+```python
+x = np.arange(256)                          # all possible values
+f = np.clip((x - 120) * 1.8 + 120, 0, 255)
+lut = f.astype(np.uint8)                    # 256 entries
+out = lut[img]                              # the whole image, in one step
+
+negative = (255 - x).astype(np.uint8)[img]
+out = cv2.LUT(img, lut)                     # OpenCV: the same
+```
+
+- The formula runs 256 times, not once per pixel.
+- Any point operation can be a lookup table — also one without a formula.
+
+# Histograms
+
+## What is a histogram?
+
+![](media/hist_toy.svg){width=100%}
+
+- For each value: how many pixels have it.
+- The sum of the histogram is the number of pixels (16 here).
+- Where the pixels are is lost — only how many.
+
+## Computing a histogram
+
+```python
+hist = np.zeros(256, dtype=np.int64)               # a loop: ~40 ms
+for v in img.ravel():
+    hist[v] += 1
+
+hist = np.bincount(img.ravel(), minlength=256)     # NumPy: < 1 ms
+hist, edges = np.histogram(img, bins=256, range=(0, 256))
+hist = cv2.calcHist([img], [0], None, [256], [0, 256]).ravel()   # float32
+```
+
+- `ravel()` — the image as one long 1D array.
+- `minlength=256` — values that never appear get a count of 0.
+- `cv2.calcHist` returns shape `(256, 1)` in OpenCV 4: `.ravel()` makes it 1D.
+
+## Drawing a histogram
+
+```python
+plt.bar(np.arange(256), hist, width=1)
+plt.xlim(0, 255)
+plt.show()
+
+plt.hist(img.ravel(), bins=256, range=(0, 256))    # counts and draws
+```
+
+For a color image: one histogram per channel, `img[:, :, c]`.
+
+## What a histogram tells
+
+![](media/hist_examples.png){width=100%}
+
+- Dark: on the left. Bright: on the right. Low contrast: narrow.
+- Spikes and gaps: a point operation sent several values to one value, or skipped values.
+
+# Histogram equalization
+
+## The idea
+
+- Min-max stretches linearly: a narrow histogram becomes wide, but keeps its shape.
+- Equalization: about the same number of pixels for every range of values.
+- Values that many pixels have get more room.
+- The tool: the cumulative histogram (CDF).
+
+## The CDF
+
+The 4 × 4 image from before, values 0..7:
+
+| value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| `hist` | 0 | 0 | 2 | 6 | 6 | 2 | 0 | 0 |
+| `cdf` | 0 | 0 | 2 | 8 | 14 | 16 | 16 | 16 |
+| new value | 0 | 0 | 0 | 3 | 6 | 7 | 7 | 7 |
+
+- `cdf[v]` = how many pixels have a value ≤ `v`: `hist.cumsum()`.
+- new value = round(7 · (`cdf` − 2) / (16 − 2)). 2 is the first non-zero `cdf`, 16 the number of pixels.
+- Values 2, 3, 4, 5 become 0, 3, 6, 7: the whole range is used.
+
+## Equalization in NumPy
+
+```python
+hist = np.bincount(img.ravel(), minlength=256)
+cdf = hist.cumsum()
+cdf_min = cdf[cdf > 0].min()                     # the first non-zero value
+lut = np.round(255 * (cdf - cdf_min) / (cdf[-1] - cdf_min))
+lut = np.clip(lut, 0, 255).astype(np.uint8)
+eq = lut[img]                                    # a lookup table again
+
+eq_cv = cv2.equalizeHist(img)                    # OpenCV: exactly the same
+```
+
+`cdf[-1]` — the last value of the CDF: the number of pixels.
+
+## Equalization: the result
+
+![](media/equalize.png){width=100%}
+
+- Orange: the CDF (0 to 1). After equalization it is close to a straight line.
+- Not linear: it can also amplify noise and change the look of an image.
+
+# Color models
+
+## Stretching R, G, B separately
+
+![](media/color_stretch.png){width=100%}
+
+- Original: R is 120..145, G is 25..30, B is 25..28. Each one stretched to 0..255.
+- The dark red background has the highest G of the image → G becomes 255 → green!
+- The ratio between R, G and B is the color. To keep the color, change only the brightness.
+
+## HSV
+
+- **H** (hue): which color — an angle on the color wheel.
+- **S** (saturation): how strong the color is. 0 = gray.
+- **V** (value): the brightness, `max(R, G, B)`.
+
+```python
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+```
+
+![](media/hue_bar.png){width=75%}
+
+- In `uint8`, H is **0..179** (degrees / 2): 360 does not fit in a byte. S and V are 0..255.
+
+## HSV: the channels
+
+![](media/hsv_channels.png){width=100%}
+
+## YCrCb
+
+- **Y**: the brightness — the grayscale formula `0.299 R + 0.587 G + 0.114 B`.
+- **Cr**, **Cb**: how much more red / blue than gray. 128 = none.
+
+```python
+ycc = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)    # the order: Y, Cr, Cb
+y = ycc[:, :, 0]                                # the same as COLOR_BGR2GRAY
+```
+
+- Used in JPEG and in video: the eye is less sensitive to color than to brightness,
+  so Cr and Cb can be stored with less detail.
+
+## Change only the brightness
+
+```python
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+hsv[:, :, 2] = cv2.equalizeHist(hsv[:, :, 2])    # or min-max on V
+out = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+ycc = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+ycc[:, :, 0] = cv2.equalizeHist(ycc[:, :, 0])    # Y
+out = cv2.cvtColor(ycc, cv2.COLOR_YCrCb2BGR)
+```
+
+- Convert, change one channel, convert back.
+- H and S (or Cr and Cb) are not touched: the color stays.
+
+## Selecting by color
+
+```python
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
+mask = (h >= 15) & (h <= 35) & (s >= 100) & (v >= 100)   # yellow
+
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+out = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)   # gray, but 3 channels
+out[mask] = img[mask]                          # color only in the mask
+```
+
+- `&` — "and", element by element. The parentheses are required.
+- Red is at both ends of H: `(h <= 10) | (h >= 170)`.
+- `cv2.inRange(hsv, (15, 100, 100), (35, 255, 255))` — the same mask, as 0 / 255.
+
+## Selecting by color: the result
+
+![](media/hue_mask.png){height=600}
+
+# Geometric transformations
+
+## Moving pixels
+
+- Point operations change the **values** of the pixels.
+- Geometric transformations change their **positions**: scale, rotate, translate, mirror.
+- Two questions:
+  - Where does each pixel go? — a matrix.
+  - Which value does an output pixel get, between the pixels? — interpolation.
+
+## Coordinates
+
+- The pixel in row `r`, column `c` is the point `(x, y) = (c, r)`.
+- x to the right, **y down**. The origin `(0, 0)` is the top-left pixel.
+- Arrays: `img[y, x]` — row first. Matrices and OpenCV: `(x, y)`.
+
+## Matrix times vector
+
+$$
+\begin{bmatrix} a & b \\ c & d \end{bmatrix}
+\begin{bmatrix} x \\ y \end{bmatrix} =
+\begin{bmatrix} a x + b y \\ c x + d y \end{bmatrix}
+$$
+
+```python
+A = np.array([[1, 2],
+              [3, 4]])
+p = np.array([5, 6])
+A @ p          # [17 39]        matrix product
+A * p          # [[ 5 12]       element by element (broadcasting)!
+               #  [15 24]]
+```
+
+## Scaling and rotation
+
+$$
+S = \begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix}
+\qquad
+R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}
+$$
+
+![](media/geom_basic.svg){width=100%}
+
+- Dashed: before. Blue: after. The black dot is the origin — it never moves.
+
+## Rotation: which way?
+
+- In math (y up), `R(θ)` with θ > 0 turns **counter-clockwise**.
+- In an image (y down), the same matrix turns **clockwise** on the screen.
+- `cv2.getRotationMatrix2D(center, angle, scale)`: angle > 0 is counter-clockwise on the screen —
+  it uses `R(−angle)`.
+
+## Order matters
+
+![](media/geom_order.svg){width=90%}
+
+- `R @ S @ p`: first `S`, then `R` — the matrix next to the point acts first.
+- `R @ S` and `S @ R` are different transformations.
+- Multiply the matrices once, then apply one matrix to all the points.
+
+## Translation is not a 2×2 matrix
+
+- Translation: `(x, y)` → `(x + tx, y + ty)`.
+- Any 2×2 matrix sends `(0, 0)` to `(0, 0)`, so it cannot translate.
+- The trick — **homogeneous coordinates**: add a 1, `(x, y)` → `(x, y, 1)`.
+
+## Homogeneous coordinates
+
+$$
+T = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}
+\qquad
+T \begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = \begin{bmatrix} x + t_x \\ y + t_y \\ 1 \end{bmatrix}
+\qquad
+R = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+- Every transformation is now a 3×3 matrix, and composing is multiplying: `M = T @ R @ S`.
+- The last row is always `[0, 0, 1]`. OpenCV uses only the top 2 rows: a 2×3 matrix, `M[:2]`.
+
+## Rotating around the center
+
+![](media/geom_center.svg){width=85%}
+
+- `R` alone rotates around `(0, 0)` — the top-left corner.
+- Around the center `c`: move `c` to the origin, rotate, move back — `T(c) @ R @ T(−c)`.
+
+## Rotating around the center: code
+
+```python
+cx, cy = (w - 1) / 2, (h - 1) / 2          # the center pixel
+to_origin = np.array([[1, 0, -cx],
+                      [0, 1, -cy],
+                      [0, 0, 1]])
+back = np.array([[1, 0, cx],
+                 [0, 1, cy],
+                 [0, 0, 1]])
+M = back @ rotate @ to_origin               # rotate: R as a 3x3 matrix
+
+cv2.getRotationMatrix2D((cx, cy), -30, 1.0)  # == M[:2] for a 30° rotate
+```
+
+`code/warp.py`, function `rotation_about_center`.
+
+# Warping images
+
+## Forward mapping: holes
+
+![](media/forward_holes.png){height=420}
+
+- Forward: for each **source** pixel, compute where it goes, and round.
+- Some output pixels get no value (holes), others get two.
+
+## Backward mapping
+
+- For each **output** pixel `(x, y)`: where did it come from?
+  `(sx, sy, 1) = M⁻¹ (x, y, 1)` — the inverse matrix.
+- Every output pixel gets exactly one value: no holes.
+- `(sx, sy)` is usually not a whole number → interpolation.
+- If `(sx, sy)` is outside the source image: black.
+
+## Backward mapping: a loop
+
+```python
+M_inv = np.linalg.inv(M)                 # the inverse, computed once
+out = np.zeros_like(img)
+for y in range(h):
+    for x in range(w):
+        sx, sy, _ = M_inv @ (x, y, 1)    # where does (x, y) come from?
+        c, r = round(sx), round(sy)      # the nearest source pixel
+        if 0 <= r < h and 0 <= c < w:
+            out[y, x] = img[r, c]
+```
+
+- `round` — **nearest neighbor**: the value of the closest pixel.
+- About 1 second for a 400 × 300 image.
+
+## Interpolation
+
+![](media/interpolation_compare.png){width=100%}
+
+- **Nearest neighbor**: the closest pixel. Fast, blocky.
+- **Bilinear**: a weighted average of the 4 surrounding pixels. Smooth.
+- **Bicubic**: 16 pixels (4 × 4). Sharper edges, slower.
+
+## Bilinear interpolation
+
+:::: {.columns}
+::: {.column width="45%"}
+![](media/bilinear.svg){width=100%}
+:::
+::: {.column width="55%"}
+- `fx`, `fy` — the fractional parts of `sx`, `sy`.
+- Top, along x: 10 + 0.3 · (20 − 10) = 13.
+- Bottom, along x: 30 + 0.3 · (40 − 30) = 33.
+- Then along y: 13 + 0.6 · (33 − 13) = **25**.
+- The closer a corner, the larger its weight.
+:::
+::::
+
+## Where exactly is a pixel?
+
+![](media/pixel_centers.svg){.nostretch width=42%}
+
+- Resize ×2, matching the **centers**: `src = (dst + 0.5) / 2 − 0.5`.
+- `cv2.resize`: `[0 100 200 250]` → `[0 25 75 125 175 212.5 237.5 250]`
+- `src = dst / 2`: `[0 50 100 150 200 225 250 250]` — half a pixel off.
+- No 0.5: `cv2.warpAffine`, `INTER_NEAREST`. With 0.5: `INTER_NEAREST_EXACT`.
+
+## A vectorized warp
+
+```python
+ys, xs = np.indices((h, w))                  # y, x of every output pixel
+coords = np.stack([xs.ravel(), ys.ravel(), np.ones(h * w)])   # (3, h*w)
+sx, sy, _ = np.linalg.inv(M) @ coords        # all pixels in one product
+c = np.round(sx).astype(int).reshape(h, w)
+r = np.round(sy).astype(int).reshape(h, w)
+
+inside = (r >= 0) & (r < h) & (c >= 0) & (c < w)
+out = np.zeros_like(img)
+out[inside] = img[r[inside], c[inside]]      # all pixels at once
+```
+
+- `np.indices((2, 3))` → y: `[[0 0 0] [1 1 1]]`, x: `[[0 1 2] [0 1 2]]`.
+- `img[r, c]` with arrays `r`, `c`: one pixel for each pair `(r[i], c[i])`.
+
+## The result
+
+![](media/warp_result.png){width=100%}
+
+- Bilinear (`code/warp.py`) and `cv2.warpAffine` differ by at most 1–2 inside the image.
+
+## OpenCV
+
+```python
+M = cv2.getRotationMatrix2D((cx, cy), 30, 1.0)               # 2x3
+out = cv2.warpAffine(img, M, (w, h))                          # bilinear
+out = cv2.warpAffine(img, M, (w, h), flags=cv2.INTER_NEAREST)
+
+small = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+big = cv2.resize(img, (2 * w, 2 * h), interpolation=cv2.INTER_CUBIC)
+```
+
+- Sizes in OpenCV are **(width, height)** — the opposite of `img.shape`.
+- Shrinking: `INTER_AREA` averages the pixels; nearest and bilinear skip pixels.
+
+## How fast?
+
+Rotating a 400 × 300 color image (`code/warp.py`):
+
+| | time |
+|---|---|
+| Python loop, nearest | ~1000 ms |
+| NumPy, nearest | ~10 ms |
+| NumPy, bilinear | ~45 ms |
+| `cv2.warpAffine`, bilinear | ~0.3 ms |
+
+- Loop → NumPy: ~100× faster. NumPy → OpenCV: ~100× faster again.
+- OpenCV's first call is slower (~100 ms): measure more than once.
