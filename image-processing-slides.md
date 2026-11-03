@@ -2,13 +2,15 @@
 title: "Digital Image Processing"
 subtitle: "96533.1.1 — Michlala Jerusalem College, 2026–2027"
 author: "Nadav Aharoni"
+date: now                      # render time, shown in the footer
+date-format: "YYYY-MM-DD HH:mm"
 lang: en
 dir: ltr
 format:
   revealjs:
     embed-resources: false   # GitHub Pages: small HTML + a libraries folder that rarely changes
     slide-number: true
-    footer: "Digital Image Processing"
+    footer: "Digital Image Processing · updated {{< meta date >}}"
     css: slides.css
     code-line-numbers: false
     highlight-style: github
@@ -414,6 +416,20 @@ weights = np.array([0.114, 0.587, 0.299])   # B, G, R
 - Sizes must be equal, or one of them must be 1 (or missing).
 - `(400, 300, 3) * (3,)` → each pixel's 3 values are multiplied by the 3 weights.
 - `img + 10` is broadcasting too: a scalar fits any shape.
+
+## Broadcasting along other axes (advanced)
+
+```python
+img.shape                               # (400, 300, 3)
+m = img.mean(axis=2)                    # (400, 300): mean of each pixel
+img - m                                 # ValueError!
+m = img.mean(axis=2, keepdims=True)     # (400, 300, 1)
+(img - m).shape                         # (400, 300, 3)
+```
+
+- `(400, 300)` is lined up from the right: 300 against 3 → error.
+- `keepdims=True` keeps the squashed axis, with size 1.
+- A size-1 axis is stretched to match: each pixel's mean is subtracted from its 3 channels.
 
 ## Grayscale
 

@@ -6,8 +6,8 @@
 <script src="image-processing-slides_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="image-processing-slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="image-processing-slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="image-processing-slides_files/libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+<link href="image-processing-slides_files/libs/quarto-html/quarto-syntax-highlighting-bb62276ab45c84d9efd712f51ff97b5a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Nadav Aharoni">
   <title>Digital Image Processing</title>
@@ -17,10 +17,16 @@
   <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -95,7 +101,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="image-processing-slides_files/libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
   <link rel="stylesheet" href="slides.css">
   <link href="image-processing-slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="image-processing-slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -200,11 +206,12 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Nadav Aharoni 
+Nadav Aharoni
 </div>
 </div>
 </div>
 
+  <p class="date">2026-11-03 14:36</p>
 </section>
 <section>
 <section id="introduction" class="title-slide slide level1 center">
@@ -626,34 +633,47 @@ Nadav Aharoni
 <li><code>img + 10</code> is broadcasting too: a scalar fits any shape.</li>
 </ul>
 </section>
+<section id="broadcasting-along-other-axes-advanced" class="slide level2">
+<h2>Broadcasting along other axes (advanced)</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a>img.shape                               <span class="co"># (400, 300, 3)</span></span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> img.mean(axis<span class="op">=</span><span class="dv">2</span>)                    <span class="co"># (400, 300): mean of each pixel</span></span>
+<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">-</span> m                                 <span class="co"># ValueError!</span></span>
+<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> img.mean(axis<span class="op">=</span><span class="dv">2</span>, keepdims<span class="op">=</span><span class="va">True</span>)     <span class="co"># (400, 300, 1)</span></span>
+<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>(img <span class="op">-</span> m).shape                         <span class="co"># (400, 300, 3)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>(400, 300)</code> is lined up from the right: 300 against 3 → error.</li>
+<li><code>keepdims=True</code> keeps the squashed axis, with size 1.</li>
+<li>A size-1 axis is stretched to match: each pixel's mean is subtracted from its 3 channels.</li>
+</ul>
+</section>
 <section id="grayscale" class="slide level2">
 <h2>Grayscale</h2>
 <p>The eye is most sensitive to green and least to blue:</p>
 <p><span class="math display">\[Y = 0.299\,R + 0.587\,G + 0.114\,B\]</span></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> np.array([<span class="fl">0.114</span>, <span class="fl">0.587</span>, <span class="fl">0.299</span>])          <span class="co"># B, G, R</span></span>
-<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> (img <span class="op">*</span> weights).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">2</span>)                 <span class="co"># float64, shape (H, W)</span></span>
-<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> np.clip(gray, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)</span>
-<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>gray_cv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)    <span class="co"># OpenCV: almost the same</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> np.array([<span class="fl">0.114</span>, <span class="fl">0.587</span>, <span class="fl">0.299</span>])          <span class="co"># B, G, R</span></span>
+<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> (img <span class="op">*</span> weights).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">2</span>)                 <span class="co"># float64, shape (H, W)</span></span>
+<span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> np.clip(gray, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)</span>
+<span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a>gray_cv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)    <span class="co"># OpenCV: almost the same</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>axis=2</code> — sum over the channels; the result has one dimension less.</p>
 </section>
 <section id="boolean-masks" class="slide level2">
 <h2>Boolean masks</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> gray <span class="op">&gt;</span> <span class="dv">200</span>         <span class="co"># array of True/False, same shape as gray</span></span>
-<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a>mask.<span class="bu">sum</span>()                <span class="co"># how many pixels are brighter than 200</span></span>
-<span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray[mask] <span class="op">=</span> <span class="dv">255</span>          <span class="co"># set only those pixels</span></span>
-<span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a>gray[gray <span class="op">&lt;</span> <span class="dv">50</span>] <span class="op">=</span> <span class="dv">0</span>       <span class="co"># in one line</span></span>
-<span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> np.where(mask, <span class="dv">255</span>, <span class="dv">0</span>).astype(np.uint8)   <span class="co"># if / else for every pixel</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> gray <span class="op">&gt;</span> <span class="dv">200</span>         <span class="co"># array of True/False, same shape as gray</span></span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>mask.<span class="bu">sum</span>()                <span class="co"># how many pixels are brighter than 200</span></span>
+<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray[mask] <span class="op">=</span> <span class="dv">255</span>          <span class="co"># set only those pixels</span></span>
+<span id="cb22-4"><a href="" aria-hidden="true" tabindex="-1"></a>gray[gray <span class="op">&lt;</span> <span class="dv">50</span>] <span class="op">=</span> <span class="dv">0</span>       <span class="co"># in one line</span></span>
+<span id="cb22-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> np.where(mask, <span class="dv">255</span>, <span class="dv">0</span>).astype(np.uint8)   <span class="co"># if / else for every pixel</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="timing-code" class="slide level2">
 <h2>Timing code</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.perf_counter()</span>
-<span id="cb22-4"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> brighten_loop(img, <span class="dv">50</span>)</span>
-<span id="cb22-5"><a href="" aria-hidden="true" tabindex="-1"></a>elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> start</span>
-<span id="cb22-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>elapsed <span class="op">*</span> <span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss"> ms"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb23-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb23-4"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> brighten_loop(img, <span class="dv">50</span>)</span>
+<span id="cb23-5"><a href="" aria-hidden="true" tabindex="-1"></a>elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> start</span>
+<span id="cb23-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>elapsed <span class="op">*</span> <span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss"> ms"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Measure, don't guess.</li>
 <li>Measure more than once — the first run is often slower.</li>
@@ -668,7 +688,7 @@ Nadav Aharoni
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Digital Image Processing</p>
+<p>Digital Image Processing · updated 2026-11-03 14:36</p>
 </div>
 </div></div>
 
