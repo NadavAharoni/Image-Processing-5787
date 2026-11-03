@@ -43,13 +43,13 @@ stretched = np.clip(stretched, 0, 255).astype(np.uint8)
 mask = gray < 80
 print(f"mask: shape: {mask.shape}, dtype: {mask.dtype}, sum: {mask.sum()}")
 
-# display the original and grayscale images side by side
+# display the original, grayscale, stretched and masked images side by side
 fig, axes = plt.subplots(1, 4, figsize=(12, 6))
 axes[0].imshow(rgb_img)
 axes[0].set_title("Original")
 axes[0].axis("off")
 
-axes[1].imshow(gray, cmap="gray")
+axes[1].imshow(gray, cmap="gray", vmin=0, vmax=255)
 axes[1].set_title("Grayscale")
 axes[1].axis("off")
 
