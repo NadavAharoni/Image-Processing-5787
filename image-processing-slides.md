@@ -431,7 +431,7 @@ m = img.mean(axis=2, keepdims=True)     # (400, 300, 1)
 - `keepdims=True` keeps the squashed axis, with size 1.
 - A size-1 axis is stretched to match: each pixel's mean is subtracted from its 3 channels.
 
-## Grayscale
+## Broadcasting example: grayscale
 
 The eye is most sensitive to green and least to blue:
 
@@ -445,7 +445,8 @@ gray = np.clip(gray, 0, 255).astype(np.uint8)
 gray_cv = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)    # OpenCV: almost the same
 ```
 
-`axis=2` — sum over the channels; the result has one dimension less.
+- `img * weights` is **broadcasting**: `(H, W, 3) * (3,)` → each pixel's B, G, R times the 3 weights.
+- `axis=2` — sum over the channels; the result has one dimension less.
 
 ## Boolean masks
 
@@ -473,6 +474,6 @@ print(f"{elapsed * 1000:.2f} ms")
 - Measure more than once — the first run is often slower.
 - `code/loop_vs_numpy.py`
 
-## Class exercise
+## Exercises
 
 Exercises 7–10 in the exercises file.

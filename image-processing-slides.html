@@ -211,7 +211,7 @@ Nadav Aharoni
 </div>
 </div>
 
-  <p class="date">2026-11-03 14:36</p>
+  <p class="date">2026-11-03 16:14</p>
 </section>
 <section>
 <section id="introduction" class="title-slide slide level1 center">
@@ -646,8 +646,8 @@ Nadav Aharoni
 <li>A size-1 axis is stretched to match: each pixel's mean is subtracted from its 3 channels.</li>
 </ul>
 </section>
-<section id="grayscale" class="slide level2">
-<h2>Grayscale</h2>
+<section id="broadcasting-example-grayscale" class="slide level2">
+<h2>Broadcasting example: grayscale</h2>
 <p>The eye is most sensitive to green and least to blue:</p>
 <p><span class="math display">\[Y = 0.299\,R + 0.587\,G + 0.114\,B\]</span></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> np.array([<span class="fl">0.114</span>, <span class="fl">0.587</span>, <span class="fl">0.299</span>])          <span class="co"># B, G, R</span></span>
@@ -655,7 +655,10 @@ Nadav Aharoni
 <span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> np.clip(gray, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)</span>
 <span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a>gray_cv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)    <span class="co"># OpenCV: almost the same</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>axis=2</code> — sum over the channels; the result has one dimension less.</p>
+<ul>
+<li><code>img * weights</code> is <strong>broadcasting</strong>: <code>(H, W, 3) * (3,)</code> → each pixel's B, G, R times the 3 weights.</li>
+<li><code>axis=2</code> — sum over the channels; the result has one dimension less.</li>
+</ul>
 </section>
 <section id="boolean-masks" class="slide level2">
 <h2>Boolean masks</h2>
@@ -680,15 +683,15 @@ Nadav Aharoni
 <li><code>code/loop_vs_numpy.py</code></li>
 </ul>
 </section>
-<section id="class-exercise" class="slide level2">
-<h2>Class exercise</h2>
+<section id="exercises-1" class="slide level2">
+<h2>Exercises</h2>
 <p>Exercises 7–10 in the exercises file.</p>
 
 </section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Digital Image Processing · updated 2026-11-03 14:36</p>
+<p>Digital Image Processing · updated 2026-11-03 16:14</p>
 </div>
 </div></div>
 
