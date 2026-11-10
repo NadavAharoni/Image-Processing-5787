@@ -404,6 +404,34 @@ crop[:] = 0              # img does not change
 - Fast (nothing is copied), but changes go to the original.
 - Use `.copy()` when you need an independent array.
 
+## 💡 Is it a view?
+
+```python
+crop = img[100:200, 50:150]
+crop2 = img[100:200, 50:150].copy()
+
+img.flags.owndata              # True: img owns its memory
+crop.flags.owndata             # False: crop uses img's memory
+crop.base is img               # True: base = the array that owns the memory
+crop2.base                     # None: a copy owns its memory
+np.shares_memory(img, crop)    # True
+np.shares_memory(img, crop2)   # False
+```
+
+## 💡 View or copy?
+
+```python
+r = img[:, :, 2]               # one channel
+np.shares_memory(img, r)       # True: a view
+r[:] = 0                       # img has no red now
+
+mask = img < 80
+dark = img[mask]               # the dark values, shape (n,)
+np.shares_memory(img, dark)    # False: a boolean mask gives a copy
+dark[:] = 0                    # img does not change
+img[mask] = 0                  # but this writes into img
+```
+
 ## Broadcasting
 
 ```python
@@ -417,7 +445,7 @@ weights = np.array([0.114, 0.587, 0.299])   # B, G, R
 - `(400, 300, 3) * (3,)` → each pixel's 3 values are multiplied by the 3 weights.
 - `img + 10` is broadcasting too: a scalar fits any shape.
 
-## Broadcasting along other axes (advanced)
+## 💡 Broadcasting along other axes
 
 ```python
 img.shape                               # (400, 300, 3)
@@ -520,37 +548,6 @@ out = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)   # OpenCV: the same
 
 ![](media/minmax.png){height=600}
 
-## Lookup tables
-
-A `uint8` image has only 256 possible values: compute `f` once for each value, and look it up.
-
-```python
-lut = np.array([0, 10, 20, 30, 40, 50, 60, 70])
-img = np.array([[2, 3],
-                [7, 0]])
-lut[img]
-# [[20 30]
-#  [70  0]]
-```
-
-- An array as an index: each value of `img` picks one entry of `lut`.
-- The result has the shape of `img`.
-
-## Lookup tables for images
-
-```python
-x = np.arange(256)                          # all possible values
-f = np.clip((x - 120) * 1.8 + 120, 0, 255)
-lut = f.astype(np.uint8)                    # 256 entries
-out = lut[img]                              # the whole image, in one step
-
-negative = (255 - x).astype(np.uint8)[img]
-out = cv2.LUT(img, lut)                     # OpenCV: the same
-```
-
-- The formula runs 256 times, not once per pixel.
-- Any point operation can be a lookup table — also one without a formula.
-
 # Histograms
 
 ## What is a histogram?
@@ -561,21 +558,75 @@ out = cv2.LUT(img, lut)                     # OpenCV: the same
 - The sum of the histogram is the number of pixels (16 here).
 - Where the pixels are is lost — only how many.
 
-## Computing a histogram
+## Computing a histogram: a loop
 
 ```python
-hist = np.zeros(256, dtype=np.int64)               # a loop: ~40 ms
+hist = np.zeros(256, dtype=np.int64)
 for v in img.ravel():
     hist[v] += 1
-
-hist = np.bincount(img.ravel(), minlength=256)     # NumPy: < 1 ms
-hist, edges = np.histogram(img, bins=256, range=(0, 256))
-hist = cv2.calcHist([img], [0], None, [256], [0, 256]).ravel()   # float32
 ```
 
 - `ravel()` — the image as one long 1D array.
-- `minlength=256` — values that never appear get a count of 0.
-- `cv2.calcHist` returns shape `(256, 1)` in OpenCV 4: `.ravel()` makes it 1D.
+- One Python step per pixel: 120,000 steps for a 400 × 300 image, ~25 ms.
+- Why `int64`? A count can be as large as the number of pixels: `uint8` stops at 255, `int16` at 32,767.
+
+## 💡 A loop over a list is faster
+
+```python
+hist = np.zeros(256, dtype=np.int64)   # a NumPy array
+for v in img.ravel():                  # a NumPy array
+    hist[v] += 1                       # ~25 ms
+
+hist = [0] * 256                       # a Python list
+for v in img.ravel().tolist():         # a list of Python ints
+    hist[v] += 1                       # ~3 ms
+```
+
+- One element of a NumPy array is read as a new NumPy object (`np.uint8`, `np.int64`), and converted back when written: slow.
+- A list holds Python `int`s: no conversions.
+- NumPy is fast on whole arrays, slow one element at a time. Fastest: no Python loop at all (`np.bincount`, next).
+
+## Computing a histogram: `np.bincount`
+
+```python
+hist = np.bincount(img.ravel(), minlength=256)   # ~0.15 ms
+# hist: int64, shape (256,)
+
+np.bincount(np.array([3, 3, 5]))                 # [0 0 0 2 0 1]
+```
+
+- Returns `hist`, where `hist[v]` = the number of pixels with value `v`.
+- `minlength=256` — without it, the result stops at the largest value (5 above).
+- Integers ≥ 0 only: a `float` image raises `TypeError`.
+
+## Computing a histogram: `np.histogram`
+
+```python
+hist, edges = np.histogram(img, bins=256, range=(0, 256))   # ~2 ms
+# hist: int64, shape (256,)
+# edges: float64, shape (257,): 0, 1, 2, ..., 256
+
+hist, edges = np.histogram(img, bins=8, range=(0, 256))
+edges[:4]                # [ 0. 32. 64. 96.]: 8 bins, 32 values each
+```
+
+- Returns two arrays: the counts, and the bin edges (one more than the bins).
+- Works with any numbers (also `float` images) and with wider bins.
+- No `ravel()` needed: it flattens the image by itself.
+
+## Computing a histogram: `cv2.calcHist`
+
+```python
+hist = cv2.calcHist([img], [0], None, [256], [0, 256])   # ~0.05 ms
+hist.dtype            # float32
+hist.shape            # (256, 1) in OpenCV 4, (256,) in OpenCV 5
+hist = hist.ravel()   # (256,) in both
+```
+
+- The arguments are lists: images, channels, mask, number of bins, range.
+- `[0]` — the channel; for a color image `[2]` is R (B, G, R!).
+- Mask: `None` counts all pixels; a `uint8` mask counts only where it is not 0.
+- Counts come back as `float32`, not integers.
 
 ## Drawing a histogram
 
@@ -627,12 +678,13 @@ cdf = hist.cumsum()
 cdf_min = cdf[cdf > 0].min()                     # the first non-zero value
 lut = np.round(255 * (cdf - cdf_min) / (cdf[-1] - cdf_min))
 lut = np.clip(lut, 0, 255).astype(np.uint8)
-eq = lut[img]                                    # a lookup table again
+eq = lut[img]                                    # each pixel: lut[its value]
 
 eq_cv = cv2.equalizeHist(img)                    # OpenCV: exactly the same
 ```
 
-`cdf[-1]` — the last value of the CDF: the number of pixels.
+- `cdf[-1]` — the last value of the CDF: the number of pixels.
+- `lut[img]` — an array as an index: each value in `img` picks its new value from `lut` (a *lookup table*).
 
 ## Equalization: the result
 
