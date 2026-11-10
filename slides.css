@@ -36,3 +36,12 @@
 #title-slide .date {
   display: none;
 }
+
+/* A small colored square in a table cell, e.g. <span class="swatch" style="background: rgb(0, 255, 0)"></span> */
+.swatch {
+  display: inline-block;
+  width: 1.6em;
+  height: 1em;
+  border: 1px solid #888;
+  vertical-align: middle;
+}

@@ -695,18 +695,101 @@ eq_cv = cv2.equalizeHist(img)                    # OpenCV: exactly the same
 
 # Color models
 
+## An example: dark red
+
+![](media/red_rectangles_values.png){height=400}
+
+- Three regions, all dark red, with low contrast. The (R, G, B) of each region is written on it.
+- The file: `images/red_rectangles.png` (PNG, so the values are exact).
+
 ## Stretching R, G, B separately
 
 ![](media/color_stretch.png){width=100%}
 
-- Original: R is 120..145, G is 25..30, B is 25..28. Each one stretched to 0..255.
-- The dark red background has the highest G of the image → G becomes 255 → green!
+- Min-max on each channel separately: R, G and B are each stretched to 0..255.
+- The original is all dark red, but the result is green, light cyan and red. Why? Next slide.
+
+## Stretching R, G, B separately: the numbers
+
+| region | original (R, G, B) | after stretching |
+|---|---|---|
+| background | <span class="swatch" style="background: rgb(120, 30, 25)"></span> (120, 30, 25) | <span class="swatch" style="background: rgb(0, 255, 0)"></span> (0, 255, 0) |
+| top-left rectangle | <span class="swatch" style="background: rgb(135, 30, 28)"></span> (135, 30, 28) | <span class="swatch" style="background: rgb(153, 255, 255)"></span> (153, 255, 255) |
+| bottom-right rectangle | <span class="swatch" style="background: rgb(145, 25, 25)"></span> (145, 25, 25) | <span class="swatch" style="background: rgb(255, 0, 0)"></span> (255, 0, 0) |
+
+- Ranges: R 120..145, G 25..30, B 25..28. Each one becomes 0..255.
+- G = 30 is the **largest** G in the image → 255, although 30 is very little green.
+- A difference of 5 levels in G (invisible) becomes a difference of 255.
 - The ratio between R, G and B is the color. To keep the color, change only the brightness.
+
+## Stretching around each channel's mean
+
+```python
+f = img.astype(np.float64)
+m = f.mean(axis=(0, 1))               # one mean per channel, shape (3,)
+out = np.clip((f - m) * 2 + m, 0, 255).astype(np.uint8)
+```
+
+| region | original | ×2 | ×5 |
+|---|---|---|---|
+| background | <span class="swatch" style="background: rgb(120, 30, 25)"></span> (120, 30, 25) | <span class="swatch" style="background: rgb(117, 30, 24)"></span> (117, 30, 24) | <span class="swatch" style="background: rgb(110, 31, 24)"></span> (110, 31, 24) |
+| top-left rectangle | <span class="swatch" style="background: rgb(135, 30, 28)"></span> (135, 30, 28) | <span class="swatch" style="background: rgb(147, 30, 30)"></span> (147, 30, 30) | <span class="swatch" style="background: rgb(185, 31, 39)"></span> (185, 31, 39) |
+| bottom-right rectangle | <span class="swatch" style="background: rgb(145, 25, 25)"></span> (145, 25, 25) | <span class="swatch" style="background: rgb(167, 20, 24)"></span> (167, 20, 24) | <span class="swatch" style="background: rgb(235, 6, 24)"></span> (235, 6, 24) |
+
+- A gentler stretch: differences are multiplied by 2 (or 5), not blown up to 255.
+- The regions stay red. With ×5, the small differences start to show as color.
+
+## The RGB color cube
+
+:::: {.columns}
+::: {.column width="55%"}
+![](media/rgb_cube.png){width=100%}
+:::
+::: {.column width="45%"}
+- Every color is a point (R, G, B) in a cube, 0..255 on each axis.
+- Corners: black, white, red, green, blue, and their mixes: yellow, cyan, magenta.
+- The diagonal from black to white: R = G = B, all the grays.
+- Along the diagonal: brightness. Away from it: color.
+:::
+::::
+
+## Looking along the gray diagonal
+
+:::: {.columns}
+::: {.column width="55%"}
+![](media/hue_hexagon.png){width=100%}
+:::
+::: {.column width="45%"}
+- Look at the cube from white toward black: a hexagon. All grays fall on the center.
+- **Hue** (H): the angle around the center. Red 0°, yellow 60°, green 120°, ...
+- The distance from the center is `max − min`: 0 for gray.
+- **Saturation** (S): that distance, relative to the brightness.
+:::
+::::
+
+## HSV of one pixel
+
+(R, G, B) = (200, 150, 100):
+
+```text
+V = max(R, G, B)                    = 200
+S = (max − min) / max = 100 / 200   = 0.5    OpenCV: 0.5 · 255 → 127
+H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15
+```
+
+```python
+pixel = np.uint8([[[100, 150, 200]]])      # an image of 1 x 1 pixels: B, G, R
+cv2.cvtColor(pixel, cv2.COLOR_BGR2HSV)     # [[[ 15 127 200]]]
+```
+
+- H depends on which channel is the largest (add 360° if negative):
+  R: 60° · (G − B) / (max − min); G: 120° + 60° · (B − R) / (max − min); B: 240° + 60° · (R − G) / (max − min).
+- Gray (max = min): S = 0, and H has no meaning (OpenCV gives 0).
 
 ## HSV
 
-- **H** (hue): which color — an angle on the color wheel.
-- **S** (saturation): how strong the color is. 0 = gray.
+- **H** (hue): which color — the angle around the gray center.
+- **S** (saturation): how strong the color is, `(max − min) / max`. 0 = gray.
 - **V** (value): the brightness, `max(R, G, B)`.
 
 ```python
@@ -748,6 +831,31 @@ out = cv2.cvtColor(ycc, cv2.COLOR_YCrCb2BGR)
 
 - Convert, change one channel, convert back.
 - H and S (or Cr and Cb) are not touched: the color stays.
+
+## A real photo at night
+
+```python
+def stretch(ch):                          # one channel, uint8
+    lo, hi = np.percentile(ch, [1, 99])   # skip the extreme 1%
+    out = (ch.astype(np.float64) - lo) / (hi - lo) * 255
+    return np.clip(out, 0, 255).astype(np.uint8)
+
+per_channel = np.dstack([stretch(img[:, :, c]) for c in range(3)])
+hsv[:, :, 2] = stretch(hsv[:, :, 2])      # only V
+```
+
+- Plain min-max does nothing here: the street lights are 255, and some shadows are 0.
+- `np.percentile(ch, [1, 99])` — the values below which 1% and 99% of the pixels are.
+- `np.dstack` — stacks the 3 stretched channels back into one `(H, W, 3)` image.
+
+## A real photo at night: the result
+
+![](media/color_real.png){width=100%}
+
+- 1%..99% ranges: B 2..111, G 6..118, R 4..146. B is stretched the most.
+- B, G, R separately: average B / R goes from 0.70 to 0.94 — the orange cast of the street lights
+  is mostly gone. The colors change (sometimes wanted: a simple white balance).
+- Only V: average B / R stays 0.69 — the colors stay as they were, only brighter.
 
 ## Selecting by color
 

@@ -5,15 +5,31 @@ project:
   type: default
 
 # Hebrew, right to left, unless a file says otherwise (the slides set lang: en, dir: ltr).
-lang: he
+# he-IL, not he: with the bare tag pandoc's Word output loses the Hebrew font (see ../QuartoTools,
+# upstream/pandoc-issue-lang-bidi.md). HTML does not care, but the tag is right for both.
+lang: he-IL
 dir: rtl
 
 # Keep quotes as typed: smart quotes are wrong in Hebrew.
 from: markdown-smart
 
+# HTML (exercises.md). The slides set format: revealjs, so none of this applies to them.
 format:
   html:
-    embed-resources: true
+    pagetitle: "עיבוד תמונה – תרגילים"
+    css: exercises.css
+    embed-resources: false   # GitHub Pages: small HTML + a libraries folder that rarely changes; images stay in images/
+    # The file's only '#' heading becomes the page title; '##' sections become the TOC's top level
+    shift-heading-level-by: -1
     toc: true
-    toc-depth: 3
+    toc-depth: 2           # sections and exercises (after the shift)
+    toc-expand: true       # show every exercise, not only the section being read
+    toc-location: left       # Quarto mirrors the layout in RTL: "left" puts the TOC on the right
+    grid:
+      sidebar-width: 300px   # the TOC (default 250px): exercise titles are long
+      body-width: 860px      # the default (~650px) makes code blocks with comments scroll
+      margin-width: 20px     # the margin column (on the left in RTL) is empty here
+    toc-title: "תוכן עניינים"
     number-sections: false
+    highlight-style: github
+    code-copy: true

@@ -1,0 +1,109 @@
+/* Styles for exercises.md rendered to HTML (Quarto, Bootstrap theme), right to left.
+   Copied as is to the public repo, next to exercises.html. */
+
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap");
+
+/* Change the fonts here */
+:root {
+  --hebrew-font: "Assistant", "Segoe UI", Arial, sans-serif;
+  --code-font: Consolas, ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+body {
+  font-family: var(--hebrew-font);
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, h5, h6,
+.sidebar nav[role="doc-toc"] {
+  font-family: var(--hebrew-font);
+}
+
+/* _quarto.yml shifts the headings up one level: the file's "#" is the page title,
+   "##" (topics) become h1 and "###" (exercises) become h2 */
+h1.title {
+  color: #1f3a68;
+}
+
+main h1:not(.title) {
+  color: #1f3a68;
+  font-size: 1.75rem;
+  border-bottom: 2px solid #c8d3e6;
+  padding-bottom: 0.2em;
+  margin-top: 2.2em;
+}
+
+main h2 {
+  font-size: 1.35rem;
+  border-bottom: none;
+  margin-top: 1.8em;
+}
+
+main h3 {
+  font-size: 1.15rem;
+}
+
+/* The TOC lists start hidden (class "collapse") and Quarto's script shows them. That script is a
+   JavaScript module, which browsers block in a page opened from disk (file://), so the TOC came out
+   empty there. _quarto.yml shows all levels anyway (toc-expand), so show them without the script. */
+nav#TOC ul.collapse {
+  display: block;
+}
+
+/* Space between the numbered parts of an exercise */
+main ol > li {
+  margin-bottom: 0.9em;
+}
+
+/* "להגשה:" lines */
+main li strong {
+  color: #1f3a68;
+}
+
+/* Code is always left to right: whole blocks, and inline code inside a Hebrew line
+   (the same as <code dir="ltr">, which the .md still needs for GitHub) */
+pre, code, kbd, samp {
+  font-family: var(--code-font);
+}
+
+pre, div.sourceCode, div.sourceCode pre {
+  direction: ltr;
+  text-align: left;
+}
+
+p code, li code, td code, th code {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* The copy button sits at the top right of a code block; keep it there (the block is LTR) */
+div.sourceCode {
+  position: relative;
+}
+
+/* Figures: centered, never wider than the text column */
+main img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0.5em auto;
+}
+
+/* Quarto turns an image alone in a paragraph into a figure, with its alt text as a caption.
+   On GitHub the text is only alt text (a description), so hide the caption here too. */
+.quarto-figure figcaption {
+  display: none;
+}
+
+/* Phones: less indentation for nested lists */
+@media (max-width: 576px) {
+  main ul, main ol {
+    padding-inline-start: 1.3em;
+  }
+}
+
+/* Tables are wrapped in <div dir="rtl"> in the .md; header cells default to left */
+[dir="rtl"] table th {
+  text-align: right;
+}

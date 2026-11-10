@@ -7,7 +7,8 @@
 **[אתר הקורס](https://nadavaharoni.github.io/Image-Processing-5787/)** – המצגת והתרגילים.
 
 - [המצגת](https://nadavaharoni.github.io/Image-Processing-5787/image-processing-slides.html) – כל השקפים של הקורס, בקובץ אחד.
-- [התרגילים](exercises.md) – כל התרגילים של הקורס, בקובץ אחד.
+- [התרגילים](https://nadavaharoni.github.io/Image-Processing-5787/exercises.html) – כל התרגילים של הקורס, בקובץ אחד.
+  הקובץ המקורי הוא [exercises.md](exercises.md), שממנו נוצר דף האינטרנט.
 
 ## מה יש במאגר
 
