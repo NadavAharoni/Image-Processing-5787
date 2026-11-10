@@ -978,7 +978,7 @@ M = back @ rotate @ to_origin               # rotate: R as a 3x3 matrix
 cv2.getRotationMatrix2D((cx, cy), -30, 1.0)  # == M[:2] for a 30° rotate
 ```
 
-`code/warp.py`, function `rotation_about_center`.
+- The center stays in place; every other point turns around it.
 
 # Warping images
 
@@ -1066,7 +1066,7 @@ out[inside] = img[r[inside], c[inside]]      # all pixels at once
 
 ![](media/warp_result.png){width=100%}
 
-- Bilinear (`code/warp.py`) and `cv2.warpAffine` differ by at most 1–2 inside the image.
+- Bilinear in NumPy and bilinear in `cv2.warpAffine` differ by at most 1–2 inside the image.
 
 ## OpenCV
 
@@ -1084,7 +1084,7 @@ big = cv2.resize(img, (2 * w, 2 * h), interpolation=cv2.INTER_CUBIC)
 
 ## How fast?
 
-Rotating a 400 × 300 color image (`code/warp.py`):
+Rotating a 400 × 300 color image by 30°:
 
 | | time |
 |---|---|

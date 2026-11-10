@@ -211,7 +211,7 @@ Nadav Aharoni
 </div>
 </div>
 
-  <p class="date">2026-11-10 20:34</p>
+  <p class="date">2026-11-10 23:28</p>
 </section>
 <section>
 <section id="introduction" class="title-slide slide level1 center">
@@ -1289,7 +1289,9 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 <span id="cb44-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> back <span class="op">@</span> rotate <span class="op">@</span> to_origin               <span class="co"># rotate: R as a 3x3 matrix</span></span>
 <span id="cb44-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-10"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((cx, cy), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)  <span class="co"># == M[:2] for a 30° rotate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>code/warp.py</code>, function <code>rotation_about_center</code>.</p>
+<ul>
+<li>The center stays in place; every other point turns around it.</li>
+</ul>
 </section></section>
 <section>
 <section id="warping-images" class="title-slide slide level1 center">
@@ -1382,7 +1384,7 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 <h2>The result</h2>
 
 <img data-src="media/warp_result.png" style="width:100.0%" class="r-stretch"><ul>
-<li>Bilinear (<code>code/warp.py</code>) and <code>cv2.warpAffine</code> differ by at most 1–2 inside the image.</li>
+<li>Bilinear in NumPy and bilinear in <code>cv2.warpAffine</code> differ by at most 1–2 inside the image.</li>
 </ul>
 </section>
 <section id="opencv" class="slide level2">
@@ -1400,7 +1402,7 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 </section>
 <section id="how-fast" class="slide level2">
 <h2>How fast?</h2>
-<p>Rotating a 400 × 300 color image (<code>code/warp.py</code>):</p>
+<p>Rotating a 400 × 300 color image by 30°:</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -1436,7 +1438,7 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Digital Image Processing · updated 2026-11-10 20:34</p>
+<p>Digital Image Processing · updated 2026-11-10 23:28</p>
 </div>
 </div></div>
 
