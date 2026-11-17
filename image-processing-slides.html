@@ -205,7 +205,7 @@ Nadav Aharoni
 </div>
 </div>
 
-  <p class="date">2026-11-17 11:20</p>
+  <p class="date">2026-11-17 13:20</p>
 </section>
 <section>
 <section id="introduction" class="title-slide slide level1 center">
@@ -906,19 +906,59 @@ Nadav Aharoni
 <h1>Histogram equalization</h1>
 
 </section>
+<section id="an-8-8-image" class="slide level2">
+<h2>An 8 × 8 image</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="media/eq8_image.svg" style="width:100.0%"></p>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>64 pixels, values 0..15 (4 bits, easier to read than 0..255).</li>
+<li>Do you see a letter? Its pixels are 8 and 9; the background is 6 and 7.</li>
+<li>In the corners: one 0, one 1, one 14, one 15.</li>
+<li>Min-max does nothing: the min is already 0, the max already 15.</li>
+</ul>
+</div></div>
+</section>
 <section id="the-idea" class="slide level2">
 <h2>The idea</h2>
 <ul>
 <li>Min-max stretches linearly: a narrow histogram becomes wide, but keeps its shape.</li>
 <li>Equalization: about the same number of pixels for every range of values.</li>
-<li>Values that many pixels have get more room.</li>
+<li>Values that many pixels have — get more room.</li>
 <li>The tool: the cumulative histogram (CDF).</li>
 </ul>
 </section>
-<section id="the-cdf" class="slide level2">
-<h2>The CDF</h2>
-<p>The 4 × 4 image from before, values 0..7:</p>
+<section id="its-histogram" class="slide level2">
+<h2>Its histogram</h2>
+
+<img data-src="media/eq8_hist.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>Crowded: 6..9 hold 60 of the 64 pixels.</li>
+<li>Empty: 2..5 and 10..13. Rare: 0, 1, 14, 15 (the corners).</li>
+</ul>
+</section>
+<section id="the-cdf-step-by-step" class="slide level2">
+<h2>The CDF, step by step</h2>
 <table class="caption-top">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>value</th>
@@ -930,48 +970,151 @@ Nadav Aharoni
 <th>5</th>
 <th>6</th>
 <th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>hist</code></td>
+<td>1</td>
+<td>1</td>
 <td>0</td>
 <td>0</td>
-<td>2</td>
-<td>6</td>
-<td>6</td>
-<td>2</td>
 <td>0</td>
 <td>0</td>
+<td>8</td>
+<td>34</td>
+<td>14</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
 </tr>
 <tr class="even">
 <td><code>cdf</code></td>
-<td>0</td>
-<td>0</td>
+<td>1</td>
 <td>2</td>
-<td>8</td>
-<td>14</td>
-<td>16</td>
-<td>16</td>
-<td>16</td>
-</tr>
-<tr class="odd">
-<td>new value</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>3</td>
-<td>6</td>
-<td>7</td>
-<td>7</td>
-<td>7</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>10</td>
+<td>44</td>
+<td>58</td>
+<td>62</td>
+<td>62</td>
+<td>62</td>
+<td>62</td>
+<td>62</td>
+<td>63</td>
+<td>64</td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li><code>cdf[v]</code> = how many pixels have a value ≤ <code>v</code>: <code>hist.cumsum()</code>.</li>
-<li>new value = round(7 · (<code>cdf</code> − 2) / (16 − 2)). 2 is the first non-zero <code>cdf</code>, 16 the number of pixels.</li>
-<li>Values 2, 3, 4, 5 become 0, 3, 6, 7: the whole range is used.</li>
+<li><code>cdf[v]</code> = how many pixels are ≤ <code>v</code>.</li>
+<li>Each step adds the pixels of one value: <code>cdf[v] = cdf[v − 1] + hist[v]</code>. In NumPy: <code>hist.cumsum()</code>.</li>
+<li>An empty value: the CDF stays flat. The last value: all 64 pixels.</li>
+</ul>
+</section>
+<section id="the-cdf-drawn" class="slide level2">
+<h2>The CDF, drawn</h2>
+
+<img data-src="media/eq8_cdf.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>Gray: the pixels below <code>v</code>. Blue: the pixels equal to <code>v</code>, added on top.</li>
+</ul>
+</section>
+<section id="levels-cut-the-cdf-into-16-bands" class="slide level2">
+<h2>16 levels: cut the CDF into 16 bands</h2>
+
+<img data-src="media/eq8_bands.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>64 pixels, 16 levels: 4 pixels per level. Cut the height of the CDF into 16 bands of 4.</li>
+<li>New value = the band where the bar ends: 7 (<code>cdf</code> = 44) → band 10.</li>
+<li>Tall steps (many pixels) move far apart. Short steps (few pixels) end in the same band: merged.</li>
+</ul>
+</section>
+<section id="the-mapping" class="slide level2">
+<h2>The mapping</h2>
+<p><span class="math display">\[new = round\left(15 \cdot \frac{cdf[v] - 1}{64 - 1}\right)\]</span></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>value</th>
+<th>0</th>
+<th>1</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>14</th>
+<th>15</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cdf</code></td>
+<td>1</td>
+<td>2</td>
+<td>10</td>
+<td>44</td>
+<td>58</td>
+<td>62</td>
+<td>63</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>exact</td>
+<td>0</td>
+<td>0.24</td>
+<td>2.14</td>
+<td>10.24</td>
+<td>13.57</td>
+<td>14.52</td>
+<td>14.76</td>
+<td>15</td>
+</tr>
+<tr class="odd">
+<td>new</td>
+<td><strong>0</strong></td>
+<td><strong>0</strong></td>
+<td>2</td>
+<td>10</td>
+<td>14</td>
+<td><strong>15</strong></td>
+<td><strong>15</strong></td>
+<td><strong>15</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>1 is the first non-zero <code>cdf</code>: the darkest value goes to 0, the brightest to 15.</li>
+<li>Here it gives exactly the bands of the previous slide.</li>
+<li>Values with no pixels are left out: their new value does not matter.</li>
+</ul>
+</section>
+<section id="the-result-1" class="slide level2">
+<h2>The result</h2>
+<p><img data-src="media/eq8_result.svg" height="560"></p>
+</section>
+<section id="the-result-what-happened" class="slide level2">
+<h2>The result: what happened</h2>
+<ul>
+<li>The letter appeared: background 7 → 10, letter 8 → 14. One level apart before, four after.</li>
+<li>The background has most of the pixels, so it gets most of the range: it turns light gray.</li>
+<li>Stretched: 6..9 (4 values) now cover 2..15.</li>
+<li>The corners lost: 0, 1 → 0 and 14, 15 → 15 (one pixel each), and 9 joined them at 15. Min-max kept them apart and could not stretch anything.</li>
+<li>Gaps closed: 2..5 had no pixels, so 6 moved down to 2.</li>
+<li>Not flat: all 34 pixels of 7 still have one value. Equalization moves values apart or merges them; it never splits one.</li>
 </ul>
 </section>
 <section id="equalization-in-numpy" class="slide level2">
@@ -1134,15 +1277,72 @@ Nadav Aharoni
 </section>
 <section id="hsv-of-one-pixel" class="slide level2">
 <h2>HSV of one pixel</h2>
-<p>(R, G, B) = (200, 150, 100):</p>
-<pre class="text"><code>V = max(R, G, B)                    = 200
-S = (max − min) / max = 100 / 200   = 0.5    OpenCV: 0.5 · 255 → 127
-H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="" aria-hidden="true" tabindex="-1"></a>pixel <span class="op">=</span> np.uint8([[[<span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>]]])      <span class="co"># an image of 1 x 1 pixels: B, G, R</span></span>
-<span id="cb37-2"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.cvtColor(pixel, cv2.COLOR_BGR2HSV)     <span class="co"># [[[ 15 127 200]]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>(R, G, B) = (200, 150, 100): max = 200 (R), min = 100 (B).</p>
+<p><span class="math display">\[V = \max(R, G, B) = 200\]</span></p>
+<p><span class="math display">\[S = \frac{\max - \min}{\max} = \frac{100}{200} = 0.5\]</span></p>
+<p><span class="math display">\[H = 60° \cdot \frac{G - B}{\max - \min} = 60° \cdot \frac{50}{100} = 30°\]</span></p>
 <ul>
-<li>H depends on which channel is the largest (add 360° if negative): R: 60° · (G − B) / (max − min); G: 120° + 60° · (B − R) / (max − min); B: 240° + 60° · (R − G) / (max − min).</li>
+<li>In OpenCV (<code>uint8</code>): S → 0.5 · 255 → 127, and H → 30 / 2 = 15.</li>
+<li>This formula for H is for R as the max: the next slides show why, and the other cases.</li>
 <li>Gray (max = min): S = 0, and H has no meaning (OpenCV gives 0).</li>
+</ul>
+</section>
+<section id="how-h-is-computed-remove-the-gray" class="slide level2">
+<h2>How H is computed: remove the gray</h2>
+
+<img data-src="media/hue_steps.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>Subtract the min: one channel becomes 0. What is left is a mix of two channels (here R and G).</li>
+<li>Divide by max − min: the largest becomes 1. The result is (1, 0.5, 0).</li>
+</ul>
+</section>
+<section id="how-h-is-computed-walk-along-the-edge" class="slide level2">
+<h2>How H is computed: walk along the edge</h2>
+<div class="columns">
+<div class="column" style="width:58%;">
+<p><img data-src="media/hue_edge.svg" style="width:100.0%"></p>
+</div><div class="column" style="width:42%;">
+<ul>
+<li>(1, t, 0) for t from 0 to 1: from red (1, 0, 0) to yellow (1, 1, 0), along one edge of the hexagon.</li>
+<li>Each edge is 60°. t = 0.5: halfway, H = 0° + 0.5 · 60° = 30°.</li>
+<li>R is the max, so t = (G − B) / (max − min), and H = t · 60°.</li>
+</ul>
+</div></div>
+<p><span class="small">G is the max: the edges next to green, starting from 120°. B is the max: next to blue, from 240°. H moves evenly along the edge; away from its middle, the true angle differs a little (t = 0.75: H = 45°, the angle is 46°).</span></p>
+</section>
+<section id="calculating-the-angle-the-red-corner" class="slide level2">
+<h2>Calculating the angle: the red corner</h2>
+
+<img data-src="media/hue_red_corner.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>R is the max: start at red (0°). G &gt; B: walk toward yellow. B &gt; G: toward magenta.</li>
+<li>How far: (G − B) / (max − min) of an edge (60°). Below 0°: add 360°.</li>
+</ul>
+</section>
+<section id="calculating-the-angle-the-three-corners" class="slide level2">
+<h2>Calculating the angle: the three corners</h2>
+
+<img data-src="media/hue_corners.svg" style="width:100.0%" class="r-stretch"><p>The max picks the corner. The other two channels pick the direction, and how far.</p>
+</section>
+<section id="the-formula-for-h" class="slide level2">
+<h2>The formula for H</h2>
+<p><span class="math display">\[
+H = \begin{cases}
+\phantom{120° + {}} 60° \cdot \dfrac{G - B}{\max - \min} &amp; \text{if } R \text{ is the max} \\[2ex]
+120° + 60° \cdot \dfrac{B - R}{\max - \min} &amp; \text{if } G \text{ is the max} \\[2ex]
+240° + 60° \cdot \dfrac{R - G}{\max - \min} &amp; \text{if } B \text{ is the max} \\[2ex]
+0 &amp; \text{if } R = G = B
+\end{cases}
+\]</span></p>
+<ul>
+<li>A negative H (only when R is the max and B &gt; G): add 360°.</li>
+<li>OpenCV (<code>uint8</code>) stores H / 2, so 0..179.</li>
+</ul>
+</section>
+<section id="where-the-rgb-point-lies" class="slide level2">
+<h2>Where the RGB point lies</h2>
+
+<img data-src="media/hue_inside.svg" style="width:100.0%" class="r-stretch"><ul>
+<li>More gray does not move the point: (180, 115, 50) + 50 = (230, 165, 100), the same spot.</li>
+<li>The distance from the center is max − min. The angle, H, is the same at every distance.</li>
 </ul>
 </section>
 <section id="hsv" class="slide level2">
@@ -1152,7 +1352,7 @@ H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15</code></
 <li><strong>S</strong> (saturation): how strong the color is, <code>(max − min) / max</code>. 0 = gray.</li>
 <li><strong>V</strong> (value): the brightness, <code>max(R, G, B)</code>.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 <img data-src="media/hue_bar.png" style="width:75.0%" class="r-stretch"><ul>
 <li>In <code>uint8</code>, H is <strong>0..179</strong> (degrees / 2): 360 does not fit in a byte. S and V are 0..255.</li>
@@ -1168,21 +1368,21 @@ H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15</code></
 <li><strong>Y</strong>: the brightness — the grayscale formula <code>0.299 R + 0.587 G + 0.114 B</code>.</li>
 <li><strong>Cr</strong>, <strong>Cb</strong>: how much more red / blue than gray. 128 = none.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="" aria-hidden="true" tabindex="-1"></a>ycc <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)    <span class="co"># the order: Y, Cr, Cb</span></span>
-<span id="cb39-2"><a href="" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> ycc[:, :, <span class="dv">0</span>]                                <span class="co"># the same as COLOR_BGR2GRAY</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="" aria-hidden="true" tabindex="-1"></a>ycc <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)    <span class="co"># the order: Y, Cr, Cb</span></span>
+<span id="cb37-2"><a href="" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> ycc[:, :, <span class="dv">0</span>]                                <span class="co"># the same as COLOR_BGR2GRAY</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Used in JPEG and in video: the eye is less sensitive to color than to brightness, so Cr and Cb can be stored with less detail.</li>
 </ul>
 </section>
 <section id="change-only-the-brightness" class="slide level2">
 <h2>Change only the brightness</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span>
-<span id="cb40-2"><a href="" aria-hidden="true" tabindex="-1"></a>hsv[:, :, <span class="dv">2</span>] <span class="op">=</span> cv2.equalizeHist(hsv[:, :, <span class="dv">2</span>])    <span class="co"># or min-max on V</span></span>
-<span id="cb40-3"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)</span>
-<span id="cb40-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-5"><a href="" aria-hidden="true" tabindex="-1"></a>ycc <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)</span>
-<span id="cb40-6"><a href="" aria-hidden="true" tabindex="-1"></a>ycc[:, :, <span class="dv">0</span>] <span class="op">=</span> cv2.equalizeHist(ycc[:, :, <span class="dv">0</span>])    <span class="co"># Y</span></span>
-<span id="cb40-7"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.cvtColor(ycc, cv2.COLOR_YCrCb2BGR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span>
+<span id="cb38-2"><a href="" aria-hidden="true" tabindex="-1"></a>hsv[:, :, <span class="dv">2</span>] <span class="op">=</span> cv2.equalizeHist(hsv[:, :, <span class="dv">2</span>])    <span class="co"># or min-max on V</span></span>
+<span id="cb38-3"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)</span>
+<span id="cb38-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="" aria-hidden="true" tabindex="-1"></a>ycc <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)</span>
+<span id="cb38-6"><a href="" aria-hidden="true" tabindex="-1"></a>ycc[:, :, <span class="dv">0</span>] <span class="op">=</span> cv2.equalizeHist(ycc[:, :, <span class="dv">0</span>])    <span class="co"># Y</span></span>
+<span id="cb38-7"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.cvtColor(ycc, cv2.COLOR_YCrCb2BGR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Convert, change one channel, convert back.</li>
 <li>H and S (or Cr and Cb) are not touched: the color stays.</li>
@@ -1190,13 +1390,13 @@ H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15</code></
 </section>
 <section id="a-real-photo-at-night" class="slide level2">
 <h2>A real photo at night</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stretch(ch):                          <span class="co"># one channel, uint8</span></span>
-<span id="cb41-2"><a href="" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> np.percentile(ch, [<span class="dv">1</span>, <span class="dv">99</span>])   <span class="co"># skip the extreme 1%</span></span>
-<span id="cb41-3"><a href="" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> (ch.astype(np.float64) <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo) <span class="op">*</span> <span class="dv">255</span></span>
-<span id="cb41-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.clip(out, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)</span>
-<span id="cb41-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-6"><a href="" aria-hidden="true" tabindex="-1"></a>per_channel <span class="op">=</span> np.dstack([stretch(img[:, :, c]) <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)])</span>
-<span id="cb41-7"><a href="" aria-hidden="true" tabindex="-1"></a>hsv[:, :, <span class="dv">2</span>] <span class="op">=</span> stretch(hsv[:, :, <span class="dv">2</span>])      <span class="co"># only V</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stretch(ch):                          <span class="co"># one channel, uint8</span></span>
+<span id="cb39-2"><a href="" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> np.percentile(ch, [<span class="dv">1</span>, <span class="dv">99</span>])   <span class="co"># skip the extreme 1%</span></span>
+<span id="cb39-3"><a href="" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> (ch.astype(np.float64) <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo) <span class="op">*</span> <span class="dv">255</span></span>
+<span id="cb39-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.clip(out, <span class="dv">0</span>, <span class="dv">255</span>).astype(np.uint8)</span>
+<span id="cb39-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="" aria-hidden="true" tabindex="-1"></a>per_channel <span class="op">=</span> np.dstack([stretch(img[:, :, c]) <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)])</span>
+<span id="cb39-7"><a href="" aria-hidden="true" tabindex="-1"></a>hsv[:, :, <span class="dv">2</span>] <span class="op">=</span> stretch(hsv[:, :, <span class="dv">2</span>])      <span class="co"># only V</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Plain min-max does nothing here: the street lights are 255, and some shadows are 0.</li>
 <li><code>np.percentile(ch, [1, 99])</code> — the values below which 1% and 99% of the pixels are.</li>
@@ -1214,13 +1414,13 @@ H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15</code></
 </section>
 <section id="selecting-by-color" class="slide level2">
 <h2>Selecting by color</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span>
-<span id="cb42-2"><a href="" aria-hidden="true" tabindex="-1"></a>h, s, v <span class="op">=</span> hsv[:, :, <span class="dv">0</span>], hsv[:, :, <span class="dv">1</span>], hsv[:, :, <span class="dv">2</span>]</span>
-<span id="cb42-3"><a href="" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> (h <span class="op">&gt;=</span> <span class="dv">15</span>) <span class="op">&amp;</span> (h <span class="op">&lt;=</span> <span class="dv">35</span>) <span class="op">&amp;</span> (s <span class="op">&gt;=</span> <span class="dv">100</span>) <span class="op">&amp;</span> (v <span class="op">&gt;=</span> <span class="dv">100</span>)   <span class="co"># yellow</span></span>
-<span id="cb42-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-5"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
-<span id="cb42-6"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)   <span class="co"># gray, but 3 channels</span></span>
-<span id="cb42-7"><a href="" aria-hidden="true" tabindex="-1"></a>out[mask] <span class="op">=</span> img[mask]                          <span class="co"># color only in the mask</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span>
+<span id="cb40-2"><a href="" aria-hidden="true" tabindex="-1"></a>h, s, v <span class="op">=</span> hsv[:, :, <span class="dv">0</span>], hsv[:, :, <span class="dv">1</span>], hsv[:, :, <span class="dv">2</span>]</span>
+<span id="cb40-3"><a href="" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> (h <span class="op">&gt;=</span> <span class="dv">15</span>) <span class="op">&amp;</span> (h <span class="op">&lt;=</span> <span class="dv">35</span>) <span class="op">&amp;</span> (s <span class="op">&gt;=</span> <span class="dv">100</span>) <span class="op">&amp;</span> (v <span class="op">&gt;=</span> <span class="dv">100</span>)   <span class="co"># yellow</span></span>
+<span id="cb40-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+<span id="cb40-6"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)   <span class="co"># gray, but 3 channels</span></span>
+<span id="cb40-7"><a href="" aria-hidden="true" tabindex="-1"></a>out[mask] <span class="op">=</span> img[mask]                          <span class="co"># color only in the mask</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>&amp;</code> — "and", element by element. The parentheses are required.</li>
 <li>Red is at both ends of H: <code>(h &lt;= 10) | (h &gt;= 170)</code>.</li>
@@ -1263,12 +1463,12 @@ H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15</code></
 \begin{bmatrix} x \\ y \end{bmatrix} =
 \begin{bmatrix} a x + b y \\ c x + d y \end{bmatrix}
 \]</span></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>],</span>
-<span id="cb43-2"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
-<span id="cb43-3"><a href="" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> np.array([<span class="dv">5</span>, <span class="dv">6</span>])</span>
-<span id="cb43-4"><a href="" aria-hidden="true" tabindex="-1"></a>A <span class="op">@</span> p          <span class="co"># [17 39]        matrix product</span></span>
-<span id="cb43-5"><a href="" aria-hidden="true" tabindex="-1"></a>A <span class="op">*</span> p          <span class="co"># [[ 5 12]       element by element (broadcasting)!</span></span>
-<span id="cb43-6"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [15 24]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>],</span>
+<span id="cb41-2"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
+<span id="cb41-3"><a href="" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> np.array([<span class="dv">5</span>, <span class="dv">6</span>])</span>
+<span id="cb41-4"><a href="" aria-hidden="true" tabindex="-1"></a>A <span class="op">@</span> p          <span class="co"># [17 39]        matrix product</span></span>
+<span id="cb41-5"><a href="" aria-hidden="true" tabindex="-1"></a>A <span class="op">*</span> p          <span class="co"># [[ 5 12]       element by element (broadcasting)!</span></span>
+<span id="cb41-6"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [15 24]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="scaling-and-rotation" class="slide level2">
 <h2>Scaling and rotation</h2>
@@ -1331,16 +1531,16 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 </section>
 <section id="rotating-around-the-center-code" class="slide level2">
 <h2>Rotating around the center: code</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="" aria-hidden="true" tabindex="-1"></a>cx, cy <span class="op">=</span> (w <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>, (h <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>          <span class="co"># the center pixel</span></span>
-<span id="cb44-2"><a href="" aria-hidden="true" tabindex="-1"></a>to_origin <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="op">-</span>cx],</span>
-<span id="cb44-3"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">1</span>, <span class="op">-</span>cy],</span>
-<span id="cb44-4"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
-<span id="cb44-5"><a href="" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, cx],</span>
-<span id="cb44-6"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">1</span>, cy],</span>
-<span id="cb44-7"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
-<span id="cb44-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> back <span class="op">@</span> rotate <span class="op">@</span> to_origin               <span class="co"># rotate: R as a 3x3 matrix</span></span>
-<span id="cb44-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-10"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((cx, cy), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)  <span class="co"># == M[:2] for a 30° rotate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="" aria-hidden="true" tabindex="-1"></a>cx, cy <span class="op">=</span> (w <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>, (h <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>          <span class="co"># the center pixel</span></span>
+<span id="cb42-2"><a href="" aria-hidden="true" tabindex="-1"></a>to_origin <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="op">-</span>cx],</span>
+<span id="cb42-3"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">1</span>, <span class="op">-</span>cy],</span>
+<span id="cb42-4"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb42-5"><a href="" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, cx],</span>
+<span id="cb42-6"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">1</span>, cy],</span>
+<span id="cb42-7"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb42-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> back <span class="op">@</span> rotate <span class="op">@</span> to_origin               <span class="co"># rotate: R as a 3x3 matrix</span></span>
+<span id="cb42-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((cx, cy), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)  <span class="co"># == M[:2] for a 30° rotate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>The center stays in place; every other point turns around it.</li>
 </ul>
@@ -1369,14 +1569,14 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 </section>
 <section id="backward-mapping-a-loop" class="slide level2">
 <h2>Backward mapping: a loop</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="" aria-hidden="true" tabindex="-1"></a>M_inv <span class="op">=</span> np.linalg.inv(M)                 <span class="co"># the inverse, computed once</span></span>
-<span id="cb45-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
-<span id="cb45-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(h):</span>
-<span id="cb45-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(w):</span>
-<span id="cb45-5"><a href="" aria-hidden="true" tabindex="-1"></a>        sx, sy, _ <span class="op">=</span> M_inv <span class="op">@</span> (x, y, <span class="dv">1</span>)    <span class="co"># where does (x, y) come from?</span></span>
-<span id="cb45-6"><a href="" aria-hidden="true" tabindex="-1"></a>        c, r <span class="op">=</span> <span class="bu">round</span>(sx), <span class="bu">round</span>(sy)      <span class="co"># the nearest source pixel</span></span>
-<span id="cb45-7"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="dv">0</span> <span class="op">&lt;=</span> r <span class="op">&lt;</span> h <span class="kw">and</span> <span class="dv">0</span> <span class="op">&lt;=</span> c <span class="op">&lt;</span> w:</span>
-<span id="cb45-8"><a href="" aria-hidden="true" tabindex="-1"></a>            out[y, x] <span class="op">=</span> img[r, c]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="" aria-hidden="true" tabindex="-1"></a>M_inv <span class="op">=</span> np.linalg.inv(M)                 <span class="co"># the inverse, computed once</span></span>
+<span id="cb43-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
+<span id="cb43-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(h):</span>
+<span id="cb43-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(w):</span>
+<span id="cb43-5"><a href="" aria-hidden="true" tabindex="-1"></a>        sx, sy, _ <span class="op">=</span> M_inv <span class="op">@</span> (x, y, <span class="dv">1</span>)    <span class="co"># where does (x, y) come from?</span></span>
+<span id="cb43-6"><a href="" aria-hidden="true" tabindex="-1"></a>        c, r <span class="op">=</span> <span class="bu">round</span>(sx), <span class="bu">round</span>(sy)      <span class="co"># the nearest source pixel</span></span>
+<span id="cb43-7"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="dv">0</span> <span class="op">&lt;=</span> r <span class="op">&lt;</span> h <span class="kw">and</span> <span class="dv">0</span> <span class="op">&lt;=</span> c <span class="op">&lt;</span> w:</span>
+<span id="cb43-8"><a href="" aria-hidden="true" tabindex="-1"></a>            out[y, x] <span class="op">=</span> img[r, c]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>round</code> — <strong>nearest neighbor</strong>: the value of the closest pixel.</li>
 <li>About 1 second for a 400 × 300 image.</li>
@@ -1418,21 +1618,21 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 </section>
 <section id="a-vectorized-warp" class="slide level2">
 <h2>A vectorized warp</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="" aria-hidden="true" tabindex="-1"></a>ys, xs <span class="op">=</span> np.indices((h, w))                  <span class="co"># y, x of every output pixel</span></span>
-<span id="cb46-2"><a href="" aria-hidden="true" tabindex="-1"></a>coords <span class="op">=</span> np.stack([xs.ravel(), ys.ravel(), np.ones(h <span class="op">*</span> w)])   <span class="co"># (3, h*w)</span></span>
-<span id="cb46-3"><a href="" aria-hidden="true" tabindex="-1"></a>sx, sy, _ <span class="op">=</span> np.linalg.inv(M) <span class="op">@</span> coords        <span class="co"># all pixels in one product</span></span>
-<span id="cb46-4"><a href="" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> np.<span class="bu">round</span>(sx).astype(<span class="bu">int</span>).reshape(h, w)</span>
-<span id="cb46-5"><a href="" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.<span class="bu">round</span>(sy).astype(<span class="bu">int</span>).reshape(h, w)</span>
-<span id="cb46-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-7"><a href="" aria-hidden="true" tabindex="-1"></a>inside <span class="op">=</span> (r <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (r <span class="op">&lt;</span> h) <span class="op">&amp;</span> (c <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (c <span class="op">&lt;</span> w)</span>
-<span id="cb46-8"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
-<span id="cb46-9"><a href="" aria-hidden="true" tabindex="-1"></a>out[inside] <span class="op">=</span> img[r[inside], c[inside]]      <span class="co"># all pixels at once</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="" aria-hidden="true" tabindex="-1"></a>ys, xs <span class="op">=</span> np.indices((h, w))                  <span class="co"># y, x of every output pixel</span></span>
+<span id="cb44-2"><a href="" aria-hidden="true" tabindex="-1"></a>coords <span class="op">=</span> np.stack([xs.ravel(), ys.ravel(), np.ones(h <span class="op">*</span> w)])   <span class="co"># (3, h*w)</span></span>
+<span id="cb44-3"><a href="" aria-hidden="true" tabindex="-1"></a>sx, sy, _ <span class="op">=</span> np.linalg.inv(M) <span class="op">@</span> coords        <span class="co"># all pixels in one product</span></span>
+<span id="cb44-4"><a href="" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> np.<span class="bu">round</span>(sx).astype(<span class="bu">int</span>).reshape(h, w)</span>
+<span id="cb44-5"><a href="" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.<span class="bu">round</span>(sy).astype(<span class="bu">int</span>).reshape(h, w)</span>
+<span id="cb44-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="" aria-hidden="true" tabindex="-1"></a>inside <span class="op">=</span> (r <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (r <span class="op">&lt;</span> h) <span class="op">&amp;</span> (c <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (c <span class="op">&lt;</span> w)</span>
+<span id="cb44-8"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
+<span id="cb44-9"><a href="" aria-hidden="true" tabindex="-1"></a>out[inside] <span class="op">=</span> img[r[inside], c[inside]]      <span class="co"># all pixels at once</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>np.indices((2, 3))</code> → y: <code>[[0 0 0] [1 1 1]]</code>, x: <code>[[0 1 2] [0 1 2]]</code>.</li>
 <li><code>img[r, c]</code> with arrays <code>r</code>, <code>c</code>: one pixel for each pair <code>(r[i], c[i])</code>.</li>
 </ul>
 </section>
-<section id="the-result-1" class="slide level2">
+<section id="the-result-2" class="slide level2">
 <h2>The result</h2>
 
 <img data-src="media/warp_result.png" style="width:100.0%" class="r-stretch"><ul>
@@ -1441,12 +1641,12 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
 </section>
 <section id="opencv" class="slide level2">
 <h2>OpenCV</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((cx, cy), <span class="dv">30</span>, <span class="fl">1.0</span>)               <span class="co"># 2x3</span></span>
-<span id="cb47-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h))                          <span class="co"># bilinear</span></span>
-<span id="cb47-3"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h), flags<span class="op">=</span>cv2.INTER_NEAREST)</span>
-<span id="cb47-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-5"><a href="" aria-hidden="true" tabindex="-1"></a>small <span class="op">=</span> cv2.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="fl">0.5</span>, fy<span class="op">=</span><span class="fl">0.5</span>, interpolation<span class="op">=</span>cv2.INTER_AREA)</span>
-<span id="cb47-6"><a href="" aria-hidden="true" tabindex="-1"></a>big <span class="op">=</span> cv2.resize(img, (<span class="dv">2</span> <span class="op">*</span> w, <span class="dv">2</span> <span class="op">*</span> h), interpolation<span class="op">=</span>cv2.INTER_CUBIC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((cx, cy), <span class="dv">30</span>, <span class="fl">1.0</span>)               <span class="co"># 2x3</span></span>
+<span id="cb45-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h))                          <span class="co"># bilinear</span></span>
+<span id="cb45-3"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h), flags<span class="op">=</span>cv2.INTER_NEAREST)</span>
+<span id="cb45-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="" aria-hidden="true" tabindex="-1"></a>small <span class="op">=</span> cv2.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="fl">0.5</span>, fy<span class="op">=</span><span class="fl">0.5</span>, interpolation<span class="op">=</span>cv2.INTER_AREA)</span>
+<span id="cb45-6"><a href="" aria-hidden="true" tabindex="-1"></a>big <span class="op">=</span> cv2.resize(img, (<span class="dv">2</span> <span class="op">*</span> w, <span class="dv">2</span> <span class="op">*</span> h), interpolation<span class="op">=</span>cv2.INTER_CUBIC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Sizes in OpenCV are <strong>(width, height)</strong> — the opposite of <code>img.shape</code>.</li>
 <li>Shrinking: <code>INTER_AREA</code> averages the pixels; nearest and bilinear skip pixels.</li>
@@ -1490,7 +1690,7 @@ R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \co
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Digital Image Processing · updated 2026-11-17 11:20</p>
+<p>Digital Image Processing · updated 2026-11-17 13:20</p>
 </div>
 </div></div>
 

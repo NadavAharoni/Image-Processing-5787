@@ -671,26 +671,86 @@ For a color image: one histogram per channel, `img[:, :, c]`.
 
 # Histogram equalization
 
+## An 8 × 8 image
+
+:::: {.columns}
+::: {.column width="50%"}
+![](media/eq8_image.svg){width=100%}
+:::
+::: {.column width="50%"}
+- 64 pixels, values 0..15 (4 bits, easier to read than 0..255).
+- Do you see a letter? Its pixels are 8 and 9; the background is 6 and 7.
+- In the corners: one 0, one 1, one 14, one 15.
+- Min-max does nothing: the min is already 0, the max already 15.
+:::
+::::
+
 ## The idea
 
 - Min-max stretches linearly: a narrow histogram becomes wide, but keeps its shape.
 - Equalization: about the same number of pixels for every range of values.
-- Values that many pixels have get more room.
+- Values that many pixels have — get more room.
 - The tool: the cumulative histogram (CDF).
 
-## The CDF
+## Its histogram
 
-The 4 × 4 image from before, values 0..7:
+![](media/eq8_hist.svg){width=100%}
 
-| value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+- Crowded: 6..9 hold 60 of the 64 pixels.
+- Empty: 2..5 and 10..13. Rare: 0, 1, 14, 15 (the corners).
+
+## The CDF, step by step
+
+| value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `hist` | 1 | 1 | 0 | 0 | 0 | 0 | 8 | 34 | 14 | 4 | 0 | 0 | 0 | 0 | 1 | 1 |
+| `cdf` | 1 | 2 | 2 | 2 | 2 | 2 | 10 | 44 | 58 | 62 | 62 | 62 | 62 | 62 | 63 | 64 |
+
+- `cdf[v]` = how many pixels are ≤ `v`.
+- Each step adds the pixels of one value: `cdf[v] = cdf[v − 1] + hist[v]`. In NumPy: `hist.cumsum()`.
+- An empty value: the CDF stays flat. The last value: all 64 pixels.
+
+## The CDF, drawn
+
+![](media/eq8_cdf.svg){width=100%}
+
+- Gray: the pixels below `v`. Blue: the pixels equal to `v`, added on top.
+
+## 16 levels: cut the CDF into 16 bands
+
+![](media/eq8_bands.svg){width=100%}
+
+- 64 pixels, 16 levels: 4 pixels per level. Cut the height of the CDF into 16 bands of 4.
+- New value = the band where the bar ends: 7 (`cdf` = 44) → band 10.
+- Tall steps (many pixels) move far apart. Short steps (few pixels) end in the same band: merged.
+
+## The mapping
+
+$$new = round\left(15 \cdot \frac{cdf[v] - 1}{64 - 1}\right)$$
+
+| value | 0 | 1 | 6 | 7 | 8 | 9 | 14 | 15 |
 |---|---|---|---|---|---|---|---|---|
-| `hist` | 0 | 0 | 2 | 6 | 6 | 2 | 0 | 0 |
-| `cdf` | 0 | 0 | 2 | 8 | 14 | 16 | 16 | 16 |
-| new value | 0 | 0 | 0 | 3 | 6 | 7 | 7 | 7 |
+| `cdf` | 1 | 2 | 10 | 44 | 58 | 62 | 63 | 64 |
+| exact | 0 | 0.24 | 2.14 | 10.24 | 13.57 | 14.52 | 14.76 | 15 |
+| new | **0** | **0** | 2 | 10 | 14 | **15** | **15** | **15** |
 
-- `cdf[v]` = how many pixels have a value ≤ `v`: `hist.cumsum()`.
-- new value = round(7 · (`cdf` − 2) / (16 − 2)). 2 is the first non-zero `cdf`, 16 the number of pixels.
-- Values 2, 3, 4, 5 become 0, 3, 6, 7: the whole range is used.
+- 1 is the first non-zero `cdf`: the darkest value goes to 0, the brightest to 15.
+- Here it gives exactly the bands of the previous slide.
+- Values with no pixels are left out: their new value does not matter.
+
+## The result
+
+![](media/eq8_result.svg){height=560}
+
+## The result: what happened
+
+- The letter appeared: background 7 → 10, letter 8 → 14. One level apart before, four after.
+- The background has most of the pixels, so it gets most of the range: it turns light gray.
+- Stretched: 6..9 (4 values) now cover 2..15.
+- The corners lost: 0, 1 → 0 and 14, 15 → 15 (one pixel each), and 9 joined them at 15.
+  Min-max kept them apart and could not stretch anything.
+- Gaps closed: 2..5 had no pixels, so 6 moved down to 2.
+- Not flat: all 34 pixels of 7 still have one value. Equalization moves values apart or merges them; it never splits one.
 
 ## Equalization in NumPy
 
@@ -791,22 +851,74 @@ out = np.clip((f - m) * 2 + m, 0, 255).astype(np.uint8)
 
 ## HSV of one pixel
 
-(R, G, B) = (200, 150, 100):
+(R, G, B) = (200, 150, 100): max = 200 (R), min = 100 (B).
 
-```text
-V = max(R, G, B)                    = 200
-S = (max − min) / max = 100 / 200   = 0.5    OpenCV: 0.5 · 255 → 127
-H = 60° · (G − B) / (max − min)     = 30°    OpenCV: 30 / 2 = 15
-```
+$$V = \max(R, G, B) = 200$$
 
-```python
-pixel = np.uint8([[[100, 150, 200]]])      # an image of 1 x 1 pixels: B, G, R
-cv2.cvtColor(pixel, cv2.COLOR_BGR2HSV)     # [[[ 15 127 200]]]
-```
+$$S = \frac{\max - \min}{\max} = \frac{100}{200} = 0.5$$
 
-- H depends on which channel is the largest (add 360° if negative):
-  R: 60° · (G − B) / (max − min); G: 120° + 60° · (B − R) / (max − min); B: 240° + 60° · (R − G) / (max − min).
+$$H = 60° \cdot \frac{G - B}{\max - \min} = 60° \cdot \frac{50}{100} = 30°$$
+
+- In OpenCV (`uint8`): S → 0.5 · 255 → 127, and H → 30 / 2 = 15.
+- This formula for H is for R as the max: the next slides show why, and the other cases.
 - Gray (max = min): S = 0, and H has no meaning (OpenCV gives 0).
+
+## How H is computed: remove the gray
+
+![](media/hue_steps.svg){width=100%}
+
+- Subtract the min: one channel becomes 0. What is left is a mix of two channels (here R and G).
+- Divide by max − min: the largest becomes 1. The result is (1, 0.5, 0).
+
+## How H is computed: walk along the edge
+
+:::: {.columns}
+::: {.column width="58%"}
+![](media/hue_edge.svg){width=100%}
+:::
+::: {.column width="42%"}
+- (1, t, 0) for t from 0 to 1: from red (1, 0, 0) to yellow (1, 1, 0), along one edge of the hexagon.
+- Each edge is 60°. t = 0.5: halfway, H = 0° + 0.5 · 60° = 30°.
+- R is the max, so t = (G − B) / (max − min), and H = t · 60°.
+:::
+::::
+
+[G is the max: the edges next to green, starting from 120°. B is the max: next to blue, from 240°.
+H moves evenly along the edge; away from its middle, the true angle differs a little (t = 0.75: H = 45°, the angle is 46°).]{.small}
+
+## Calculating the angle: the red corner
+
+![](media/hue_red_corner.svg){width=100%}
+
+- R is the max: start at red (0°). G > B: walk toward yellow. B > G: toward magenta.
+- How far: (G − B) / (max − min) of an edge (60°). Below 0°: add 360°.
+
+## Calculating the angle: the three corners
+
+![](media/hue_corners.svg){width=100%}
+
+The max picks the corner. The other two channels pick the direction, and how far.
+
+## The formula for H
+
+$$
+H = \begin{cases}
+\phantom{120° + {}} 60° \cdot \dfrac{G - B}{\max - \min} & \text{if } R \text{ is the max} \\[2ex]
+120° + 60° \cdot \dfrac{B - R}{\max - \min} & \text{if } G \text{ is the max} \\[2ex]
+240° + 60° \cdot \dfrac{R - G}{\max - \min} & \text{if } B \text{ is the max} \\[2ex]
+0 & \text{if } R = G = B
+\end{cases}
+$$
+
+- A negative H (only when R is the max and B > G): add 360°.
+- OpenCV (`uint8`) stores H / 2, so 0..179.
+
+## Where the RGB point lies
+
+![](media/hue_inside.svg){width=100%}
+
+- More gray does not move the point: (180, 115, 50) + 50 = (230, 165, 100), the same spot.
+- The distance from the center is max − min. The angle, H, is the same at every distance.
 
 ## HSV
 
