@@ -544,6 +544,28 @@ out = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)   # OpenCV: the same
 - The darkest pixel becomes 0, the brightest becomes 255.
 - One very dark or very bright pixel is enough to spoil it.
 
+## Min-max: an example
+
+![](media/minmax_example.svg){width=100%}
+
+- A pale image: min = 180, max = 210, a range of only 30.
+- Min-max stretches it to 0..255: each step of 1 becomes a step of 255 / 30 = 8.5.
+
+## Min-max: the numbers
+
+$$out = \frac{img - 180}{210 - 180} \cdot 255 = (img - 180) \cdot 8.5$$
+
+| `img` | `img − 180` | `× 8.5` | `out` (rounded) |
+|---|---|---|---|
+| 180 | 0 | 0 | **0** |
+| 190 | 10 | 85 | 85 |
+| 195 | 15 | 127.5 | **128** |
+| 200 | 20 | 170 | 170 |
+| 210 | 30 | 255 | **255** |
+
+- 195, halfway between min and max, goes to halfway between 0 and 255.
+- 127.5 is not a `uint8` value: `np.round` and `cv2.normalize` both give 128.
+
 ## Min-max: the result
 
 ![](media/minmax.png){height=600}
