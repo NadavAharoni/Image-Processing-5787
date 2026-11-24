@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><strong>עודכן לאחרונה: 17.11.2026</strong></p>
+<p><strong>עודכן לאחרונה: 24.11.2026</strong></p>
 <p>התרגילים של הקורס ירוכזו בקובץ הזה. המטלות ב-moodle יהיו מתוך הקובץ הזה (למשל "תרגילים 1–6").</p>
 <p>הקובץ יעודכן במהלך הסמסטר.</p>
 <section id="הנחיות-כלליות" class="level1">
@@ -516,17 +516,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="תרגיל-15-מטריצות-של-טרנספורמציות">תרגיל 15 – מטריצות של טרנספורמציות</h2>
 <p>את התשובות המילוליות של תרגיל זה כתבי בקובץ <code>ex15.docx</code> (או <code>ex15.md</code>). את התוכנית בקובץ <code>ex15.py</code>.</p>
 <ol type="1">
-<li><p>כתבי תוכנית שמגדירה את האות F כמערך של נקודות: שורה אחת של x ושורה אחת של y.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>],    <span class="co"># x</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">5</span>]])      <span class="co"># y</span></span></code></pre></div><button title="העתק ללוח" class="code-copy-button"><i class="bi"></i></button></div>
-<p>הגדירי מטריצה S שמכפילה רק את y פי 2, ומטריצה R שמסובבת ב-30 מעלות, כמו בשקף "Scaling and rotation". התוכנית מציגה בחלון אחד ארבעה גרפים: האות אחרי S, אחרי R, אחרי <code dir="ltr">R @ S</code> ואחרי <code dir="ltr">S @ R</code>. בכל גרף מופיעה גם האות המקורית, בקו מקווקו. התוכנית גם מדפיסה את המטריצות <code dir="ltr">R @ S</code> ו-<code dir="ltr">S @ R</code>.</p>
+<li><p>כתבי תוכנית שמגדירה מלבן כמערך של נקודות: שורה אחת של x ושורה אחת של y (כל עמודה היא פינה). הפינות מסודרות לפי הסדר מסביב למלבן, כדי שאפשר יהיה לצייר אותו:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>],      <span class="co"># x of the four corners, in order around the rectangle</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>]])     <span class="co"># y</span></span></code></pre></div><button title="העתק ללוח" class="code-copy-button"><i class="bi"></i></button></div>
+<p>הגדירי מטריצה S שמכפילה רק את y פי 2, ומטריצה R שמסובבת ב-30 מעלות, כמו בשקפים. התוכנית מציגה בחלון אחד ארבעה גרפים: המלבן אחרי S, אחרי R, אחרי <code dir="ltr">R @ S</code> ואחרי <code dir="ltr">S @ R</code>. בכל גרף מופיעים גם המלבן המקורי, בקו מקווקו, והראשית <code dir="ltr">(0, 0)</code>. התוכנית גם מדפיסה את המטריצות <code dir="ltr">R @ S</code> ו-<code dir="ltr">S @ R</code>.</p>
 <p>אפשר לצייר צורה בעזרת <code>ax.fill</code>. כדי שהציר y יפנה למטה, כמו בתמונה, הוסיפי לכל גרף את שתי השורות האחרונות:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ax.fill(pts[<span class="dv">0</span>], pts[<span class="dv">1</span>], alpha<span class="op">=</span><span class="fl">0.5</span>)     <span class="co"># pts: an array of points, shape (2, n)</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>ax.invert_yaxis()                      <span class="co"># y down, as in an image</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">"equal"</span>)                 <span class="co"># the same scale on both axes</span></span></code></pre></div><button title="העתק ללוח" class="code-copy-button"><i class="bi"></i></button></div></li>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="dv">0</span>, <span class="dv">0</span>, <span class="st">"ko"</span>)                    <span class="co"># the origin, a black dot</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>ax.invert_yaxis()                      <span class="co"># y down, as in an image</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">"equal"</span>)                 <span class="co"># the same scale on both axes</span></span></code></pre></div><button title="העתק ללוח" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>בקובץ התשובות עני:</p>
 <ul>
-<li>לאיזה כיוון, על המסך, סובבה R את האות: עם כיוון השעון או נגדו? למה?</li>
+<li>לאיזה כיוון, על המסך, סובבה R את המלבן: עם כיוון השעון או נגדו? למה?</li>
+<li>למה המלבן גם זז, ולא רק הסתובב במקום?</li>
 <li>מה ההבדל בין <code dir="ltr">R @ S</code> לבין <code dir="ltr">S @ R</code>: איזו פעולה נעשית ראשונה בכל אחת מהן?</li>
 <li>הוסיפי לתוכנית בדיקה בעזרת <code>np.allclose</code>: האם <code dir="ltr">R @ S</code> שווה ל-<code dir="ltr">S @ R</code>, כאשר S מכפילה גם את x וגם את y פי 2? הסבירי את התוצאה.</li>
 </ul></li>
@@ -538,7 +540,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>לאן M מעבירה את המרכז <code dir="ltr">(cx, cy)</code>, ולאן את הפינה השמאלית העליונה <code dir="ltr">(0, 0)</code>.</p></li>
 </ul>
 <p>בקובץ התשובות הסבירי: למה המרכז לא זז? לאן הגיעה הפינה, ומה זה אומר על התמונה אחרי הסיבוב? ולמה בפקודה של OpenCV כתוב <code dir="ltr">-30</code> ולא 30?</p></li>
-<li><p>שאלה בסגנון המבחן: בכל אחד מהגרפים A עד D, הקו המקווקו הוא האות F המקורית, והצורה הכחולה היא התוצאה של אחת מהמטריצות הבאות. הציר y מצביע למטה, כמו בתמונה, והנקודה השחורה היא הראשית <code dir="ltr">(0, 0)</code>.</p>
+<li><p>שאלה בסגנון המבחן: בכל אחד מהגרפים A עד D, הקו המקווקו הוא המלבן המקורי מסעיף 1, והצורה הכחולה היא התוצאה של אחת מהמטריצות הבאות. הציר y מצביע למטה, כמו בתמונה, והנקודה השחורה היא הראשית <code dir="ltr">(0, 0)</code>. הנקודות הכתומות הן הפינה <code dir="ltr">(3, 1)</code> לפני ואחרי.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>M1 <span class="op">=</span> np.array([[<span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="fl">0.5</span>]])</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>M2 <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]])</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>M3 <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">1</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>]])</span>
@@ -550,7 +552,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>ארבעה גרפים: A, B, C, D</figcaption>
 </figure>
 </div>
-<p>איזו מטריצה מתאימה לכל גרף? אחת המטריצות לא מופיעה. הסבירי בקובץ התשובות כל תשובה במשפט אחד: למשל, לאן המטריצה מעבירה את הנקודה <code dir="ltr">(0, 5)</code>, הקצה התחתון של האות. אחרי שענית, אפשר לבדוק בעזרת התוכנית מסעיף 1.</p></li>
+<p>איזו מטריצה מתאימה לכל גרף? אחת המטריצות לא מופיעה. הסבירי בקובץ התשובות כל תשובה במשפט אחד: למשל, לאן המטריצה מעבירה את הפינה <code dir="ltr">(3, 1)</code>. אחרי שענית, אפשר לבדוק בעזרת התוכנית מסעיף 1.</p></li>
 <li><p>בונוס: כתבי פונקציה <code dir="ltr">rotation(deg)</code> שמחזירה את המטריצה R של סיבוב ב-deg מעלות, ובדקי בעזרת <code>np.allclose</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rotation(<span class="dv">30</span>) <span class="op">@</span> rotation(<span class="dv">60</span>)       <span class="co"># == rotation(90)?</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>np.linalg.inv(rotation(<span class="dv">30</span>))       <span class="co"># == rotation(-30)? == rotation(30).T?</span></span></code></pre></div><button title="העתק ללוח" class="code-copy-button"><i class="bi"></i></button></div>
