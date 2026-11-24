@@ -113,3 +113,7 @@
 .reveal .mid-math {
   font-size: 1.35em;
 }
+/* A smaller equation, when a long one must fit on one line */
+.reveal .small-math {
+  font-size: 0.72em;
+}

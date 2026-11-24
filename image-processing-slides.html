@@ -211,7 +211,7 @@ Nadav Aharoni
 </div>
 </div>
 
-  <p class="date">2026-11-24 18:57</p>
+  <p class="date">2026-11-24 23:05</p>
 </section>
 <section>
 <section id="introduction" class="title-slide slide level1 center">
@@ -220,8 +220,8 @@ Nadav Aharoni
 </section>
 <section id="the-human-eye" class="slide level2">
 <h2>The human eye</h2>
-
-<img data-src="media/intro_2_1.jpg" style="width:100.0%" class="r-stretch"><p><span class="small">Source: Soroka Medical Center website</span></p>
+<p><img data-src="media/intro_eye_he.svg" height="600"></p>
+<p><span class="small">Source: Rhcastilhos, translated by benherz and Jmarchn, <a href="https://commons.wikimedia.org/wiki/File:Schematic_diagram_of_the_human_eye_he.svg">Wikimedia Commons</a>, CC BY-SA 3.0</span></p>
 </section>
 <section id="the-retina" class="slide level2">
 <h2>The retina</h2>
@@ -1904,11 +1904,39 @@ R \, S &amp;= \begin{bmatrix} 0.866 &amp; -0.5 \\ 0.5 &amp; 0.866 \end{bmatrix}
 </section>
 <section id="homogeneous-coordinates-everything-is-33" class="slide level2">
 <h2>Homogeneous coordinates: everything is 3×3</h2>
+<div style="font-size: 85%">
 <p><span class="math display">\[
 T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp; 1 \end{bmatrix}\qquad R = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \cos\theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}\qquad S = \begin{bmatrix} s_x &amp; 0 &amp; 0 \\ 0 &amp; s_y &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}
 \]</span></p>
+</div>
+<p>Combine transformations by multiplying matrices, as before:</p>
+<p><span class="math inline">\(M = T \, R \, S\)</span> (first <span class="math inline">\(S\)</span>, then <span class="math inline">\(R\)</span>, then <span class="math inline">\(T\)</span>).</p>
+<p>With scale and rotation expanded to 3×3, they can be multiplied with translation: any set of transformations combines into one matrix.</p>
+</section>
+<section id="rotating-around-the-center" class="slide level2">
+<h2>Rotating around the center</h2>
+<p>With translation, we can rotate around the rectangle's center <span class="math inline">\(c = (2, 1.5)\)</span>.</p>
+<div class="r-stack">
+<p><img data-src="media/center_step1.svg" class="fragment fade-out" data-fragment-index="1" width="580"></p>
+<p><img data-src="media/center_step2.svg" class="fragment fade-in-then-out" data-fragment-index="1" width="580"></p>
+<p><img data-src="media/center_step3.svg" class="fragment fade-in-then-out" data-fragment-index="2" width="580"></p>
+<p><img data-src="media/center_step4.svg" class="fragment fade-in" data-fragment-index="3" width="580"></p>
+</div>
+</section>
+<section id="homogeneous-coordinates-m-tc-r-tc" class="slide level2">
+<h2>Homogeneous coordinates: M = T(c) R T(−c)</h2>
+<p><span class="math display">\[
+\begin{aligned}
+M &amp;= T(c) \, R(30°) \, T(-c) \\[8pt]
+&amp;= \begin{bmatrix} 1 &amp; 0 &amp; 2 \\ 0 &amp; 1 &amp; 1.5 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}
+\begin{bmatrix} 0.866 &amp; -0.5 &amp; 0 \\ 0.5 &amp; 0.866 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}
+\begin{bmatrix} 1 &amp; 0 &amp; -2 \\ 0 &amp; 1 &amp; -1.5 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} \\[8pt]
+&amp;= \begin{bmatrix} 0.866 &amp; -0.5 &amp; 1.018 \\ 0.5 &amp; 0.866 &amp; -0.799 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}
+\end{aligned}
+\]</span></p>
 <ul>
-<li>Combine them by multiplying, as before: <span class="math inline">\(M = T \, R \, S\)</span> (first <span class="math inline">\(S\)</span>, then <span class="math inline">\(R\)</span>, then <span class="math inline">\(T\)</span>).</li>
+<li>Right to left: first <span class="math inline">\(T(-c)\)</span>, then <span class="math inline">\(R\)</span>, then <span class="math inline">\(T(c)\)</span>.</li>
+<li>The translations choose the center of the rotation.</li>
 </ul>
 </section>
 <section id="in-numpy-matrix-times-a-point" class="slide level2">
@@ -1940,28 +1968,102 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 <span id="cb42-9"><a href="" aria-hidden="true" tabindex="-1"></a>S <span class="op">@</span> (R <span class="op">@</span> p)    <span class="co"># [4.196 2.366]       two steps</span></span>
 <span id="cb42-10"><a href="" aria-hidden="true" tabindex="-1"></a>(S <span class="op">@</span> R) <span class="op">@</span> p    <span class="co"># [4.196 2.366]       one matrix: the same point</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+<section id="multiple-coordinates-at-once" class="slide level2">
+<h2>Multiple coordinates at once</h2>
+<p>Instead of multiplying each <span class="math inline">\((x, y)\)</span> on its own: put them as the columns of one matrix <span class="math inline">\(P\)</span>, and multiply once.</p>
+<div class="r-stack small-math">
+<div class="fragment fade-out" data-fragment-index="1">
+<p><span class="math display">\[
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+\]</span></p>
+<p><span class="math display">\[
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+\]</span></p>
+<p><span class="math display">\[
+R \, P = \begin{bmatrix} 0.866 &amp; -0.5 \\ 0.5 &amp; 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+\]</span></p>
+</div>
+<div class="fragment fade-in-then-out" data-fragment-index="1">
+<p><span class="math display">\[
+\bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+\]</span></p>
+<p><span class="math display">\[
+P = \left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+\]</span></p>
+<p><span class="math display">\[
+R \, P = \begin{bmatrix} 0.866 &amp; -0.5 \\ 0.5 &amp; 0.866 \end{bmatrix} \left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+\]</span></p>
+</div>
+<div class="fragment fade-in-then-out" data-fragment-index="2">
+<p><span class="math display">\[
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+\]</span></p>
+<p><span class="math display">\[
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+\]</span></p>
+<p><span class="math display">\[
+R \, P = \begin{bmatrix} 0.866 &amp; -0.5 \\ 0.5 &amp; 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+\]</span></p>
+</div>
+<div class="fragment fade-in-then-out" data-fragment-index="3">
+<p><span class="math display">\[
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+\]</span></p>
+<p><span class="math display">\[
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+\]</span></p>
+<p><span class="math display">\[
+R \, P = \begin{bmatrix} 0.866 &amp; -0.5 \\ 0.5 &amp; 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+\]</span></p>
+</div>
+<div class="fragment fade-in" data-fragment-index="4">
+<p><span class="math display">\[
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+\]</span></p>
+<p><span class="math display">\[
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+\]</span></p>
+<p><span class="math display">\[
+R \, P = \begin{bmatrix} 0.866 &amp; -0.5 \\ 0.5 &amp; 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+\]</span></p>
+</div>
+</div>
+</section>
+<section id="in-numpy-a-loop-over-the-points" class="slide level2">
+<h2>In NumPy: a loop over the points</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> [(<span class="dv">1</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">2</span>), (<span class="dv">3</span>, <span class="dv">1</span>), (<span class="dv">3</span>, <span class="dv">2</span>)]</span>
+<span id="cb43-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x, y <span class="kw">in</span> points:                  <span class="co"># a Python loop</span></span>
+<span id="cb43-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(R <span class="op">@</span> np.array([x, y]))      <span class="co"># one matrix multiplication per point</span></span>
+<span id="cb43-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [0.366 1.366]</span></span>
+<span id="cb43-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [-0.134  2.232]</span></span>
+<span id="cb43-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [2.098 2.366]</span></span>
+<span id="cb43-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [1.598 3.232]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="in-numpy-all-the-points-at-once" class="slide level2">
 <h2>In NumPy: all the points at once</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>],          <span class="co"># x of the four corners</span></span>
-<span id="cb43-2"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>]])         <span class="co"># y of the four corners</span></span>
-<span id="cb43-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-4"><a href="" aria-hidden="true" tabindex="-1"></a>R <span class="op">@</span> P          <span class="co"># [[ 0.366 -0.134  2.098  1.598]</span></span>
-<span id="cb43-5"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [ 1.366  2.232  2.366  3.232]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>],          <span class="co"># x of the four points</span></span>
+<span id="cb44-2"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>]])         <span class="co"># y of the four points</span></span>
+<span id="cb44-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="" aria-hidden="true" tabindex="-1"></a>R <span class="op">@</span> P          <span class="co"># [[ 0.366 -0.134  2.098  1.598]</span></span>
+<span id="cb44-5"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [ 1.366  2.232  2.366  3.232]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>Each column is a point. One <code>@</code>, no loop, and all four corners are rotated.</li>
+<li>Instead of the loop: one <code>@</code> rotates all four points, one in each column.</li>
+<li>NumPy multiplies matrices very fast: for the millions of pixels of an image, one <code>@</code> on a matrix of coordinates is much faster than a loop over the points.</li>
 </ul>
 </section>
 <section id="in-numpy-homogeneous-coordinates" class="slide level2">
 <h2>In NumPy: homogeneous coordinates</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="" aria-hidden="true" tabindex="-1"></a>P3 <span class="op">=</span> np.vstack([P, np.ones(<span class="dv">4</span>)])      <span class="co"># add a row of 1s</span></span>
-<span id="cb44-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-3"><a href="" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],             <span class="co"># translate by (1, 1.5)</span></span>
-<span id="cb44-4"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">1.5</span>],</span>
-<span id="cb44-5"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
-<span id="cb44-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-7"><a href="" aria-hidden="true" tabindex="-1"></a>T <span class="op">@</span> P3         <span class="co"># [[2.  2.  4.  4. ]</span></span>
-<span id="cb44-8"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [2.5 3.5 2.5 3.5]</span></span>
-<span id="cb44-9"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [1.  1.  1.  1. ]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="" aria-hidden="true" tabindex="-1"></a>P3 <span class="op">=</span> np.vstack([P, np.ones(<span class="dv">4</span>)])      <span class="co"># add a row of 1s</span></span>
+<span id="cb45-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],             <span class="co"># translate by (1, 1.5)</span></span>
+<span id="cb45-4"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">1.5</span>],</span>
+<span id="cb45-5"><a href="" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb45-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="" aria-hidden="true" tabindex="-1"></a>T <span class="op">@</span> P3         <span class="co"># [[2.  2.  4.  4. ]</span></span>
+<span id="cb45-8"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [2.5 3.5 2.5 3.5]</span></span>
+<span id="cb45-9"><a href="" aria-hidden="true" tabindex="-1"></a>               <span class="co">#  [1.  1.  1.  1. ]]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="images-y-points-down" class="slide level2">
 <h2>Images: y points down</h2>
@@ -1978,12 +2080,12 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 <li>NumPy indexes the row first: <code>img[y, x]</code>.</li>
 <li><code>img.shape</code> is <code>(h, w, 3)</code>: the height (number of rows) first.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">3</span>), np.uint8)</span>
-<span id="cb45-2"><a href="" aria-hidden="true" tabindex="-1"></a>img.shape          <span class="co"># (300, 400, 3): 300 rows (h), 400 columns (w)</span></span>
-<span id="cb45-3"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">10</span>, <span class="dv">50</span>]        <span class="co"># the pixel at x = 50, y = 10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">3</span>), np.uint8)</span>
+<span id="cb46-2"><a href="" aria-hidden="true" tabindex="-1"></a>img.shape          <span class="co"># (300, 400, 3): 300 rows (h), 400 columns (w)</span></span>
+<span id="cb46-3"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">10</span>, <span class="dv">50</span>]        <span class="co"># the pixel at x = 50, y = 10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="rotating-around-the-center" class="slide level2">
-<h2>Rotating around the center</h2>
+<section id="images-rotating-around-the-center" class="slide level2">
+<h2>Images: rotating around the center</h2>
 
 <img data-src="media/rect_center.svg" style="width:100.0%" class="r-stretch"><ul>
 <li><code>R</code> alone rotates around <code>(0, 0)</code>, the top-left corner.</li>
@@ -1992,14 +2094,14 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 </section>
 <section id="rotating-around-the-center-code" class="slide level2">
 <h2>Rotating around the center: code</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="" aria-hidden="true" tabindex="-1"></a>cx, cy <span class="op">=</span> (w <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>, (h <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>          <span class="co"># the center pixel</span></span>
-<span id="cb46-2"><a href="" aria-hidden="true" tabindex="-1"></a>to_origin <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="op">-</span>cx],</span>
-<span id="cb46-3"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">1</span>, <span class="op">-</span>cy],</span>
-<span id="cb46-4"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
-<span id="cb46-5"><a href="" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, cx],</span>
-<span id="cb46-6"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">1</span>, cy],</span>
-<span id="cb46-7"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
-<span id="cb46-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> back <span class="op">@</span> rotate <span class="op">@</span> to_origin               <span class="co"># rotate: R as a 3x3 matrix</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="" aria-hidden="true" tabindex="-1"></a>cx, cy <span class="op">=</span> (w <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>, (h <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>          <span class="co"># the center pixel</span></span>
+<span id="cb47-2"><a href="" aria-hidden="true" tabindex="-1"></a>to_origin <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="op">-</span>cx],</span>
+<span id="cb47-3"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">1</span>, <span class="op">-</span>cy],</span>
+<span id="cb47-4"><a href="" aria-hidden="true" tabindex="-1"></a>                      [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb47-5"><a href="" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, cx],</span>
+<span id="cb47-6"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">1</span>, cy],</span>
+<span id="cb47-7"><a href="" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb47-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> back <span class="op">@</span> rotate <span class="op">@</span> to_origin               <span class="co"># rotate: R as a 3x3 matrix</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>The center stays in place; every other point turns around it.</li>
 </ul>
@@ -2015,8 +2117,8 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 <li>a transformation is the top two rows of our 3×3 matrix, <code>M[:2]</code>, applied to <code>(x, y, 1)</code>.</li>
 </ul></li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="" aria-hidden="true" tabindex="-1"></a>h, w <span class="op">=</span> img.shape[:<span class="dv">2</span>]</span>
-<span id="cb47-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M[:<span class="dv">2</span>], (w, h))     <span class="co"># the size: (width, height)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="" aria-hidden="true" tabindex="-1"></a>h, w <span class="op">=</span> img.shape[:<span class="dv">2</span>]</span>
+<span id="cb48-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M[:<span class="dv">2</span>], (w, h))     <span class="co"># the size: (width, height)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>So the matrices from the previous slides work as they are.</li>
 </ul>
@@ -2027,25 +2129,25 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 <li>Our <code>R(θ)</code> with θ &gt; 0 turns <strong>clockwise</strong> on the screen, because y points down.</li>
 <li><code>cv2.getRotationMatrix2D(center, angle, scale)</code> turns <strong>counter-clockwise</strong> on the screen for angle &gt; 0: it builds <code>R(−angle)</code>.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((<span class="dv">0</span>, <span class="dv">0</span>), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)</span>
-<span id="cb48-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [[ 0.866 -0.5    0.   ]</span></span>
-<span id="cb48-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#  [ 0.5    0.866  0.   ]]      our R(30°), with a third column of 0s</span></span>
-<span id="cb48-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-5"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((cx, cy), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)</span>
-<span id="cb48-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># the same as M[:2] from "Rotating around the center: code"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((<span class="dv">0</span>, <span class="dv">0</span>), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)</span>
+<span id="cb49-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># [[ 0.866 -0.5    0.   ]</span></span>
+<span id="cb49-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#  [ 0.5    0.866  0.   ]]      our R(30°), with a third column of 0s</span></span>
+<span id="cb49-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="" aria-hidden="true" tabindex="-1"></a>cv2.getRotationMatrix2D((cx, cy), <span class="op">-</span><span class="dv">30</span>, <span class="fl">1.0</span>)</span>
+<span id="cb49-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># the same as M[:2] from "Rotating around the center: code"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="opencv-a-test" class="slide level2">
 <h2>OpenCV: a test</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((<span class="dv">21</span>, <span class="dv">21</span>), np.uint8)</span>
-<span id="cb49-2"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">10</span>, <span class="dv">15</span>] <span class="op">=</span> <span class="dv">255</span>           <span class="co"># one pixel, right of the center (10, 10)</span></span>
-<span id="cb49-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-4"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((<span class="dv">10</span>, <span class="dv">10</span>), <span class="dv">90</span>, <span class="fl">1.0</span>)</span>
-<span id="cb49-5"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (<span class="dv">21</span>, <span class="dv">21</span>))</span>
-<span id="cb49-6"><a href="" aria-hidden="true" tabindex="-1"></a>np.argwhere(out <span class="op">==</span> <span class="dv">255</span>)     <span class="co"># [[ 5 10]]: row 5, above the center</span></span>
-<span id="cb49-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((<span class="dv">10</span>, <span class="dv">10</span>), <span class="op">-</span><span class="dv">90</span>, <span class="fl">1.0</span>)   <span class="co"># our R(90°)</span></span>
-<span id="cb49-9"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (<span class="dv">21</span>, <span class="dv">21</span>))</span>
-<span id="cb49-10"><a href="" aria-hidden="true" tabindex="-1"></a>np.argwhere(out <span class="op">==</span> <span class="dv">255</span>)     <span class="co"># [[15 10]]: row 15, below the center</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((<span class="dv">21</span>, <span class="dv">21</span>), np.uint8)</span>
+<span id="cb50-2"><a href="" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">10</span>, <span class="dv">15</span>] <span class="op">=</span> <span class="dv">255</span>           <span class="co"># one pixel, right of the center (10, 10)</span></span>
+<span id="cb50-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((<span class="dv">10</span>, <span class="dv">10</span>), <span class="dv">90</span>, <span class="fl">1.0</span>)</span>
+<span id="cb50-5"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (<span class="dv">21</span>, <span class="dv">21</span>))</span>
+<span id="cb50-6"><a href="" aria-hidden="true" tabindex="-1"></a>np.argwhere(out <span class="op">==</span> <span class="dv">255</span>)     <span class="co"># [[ 5 10]]: row 5, above the center</span></span>
+<span id="cb50-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((<span class="dv">10</span>, <span class="dv">10</span>), <span class="op">-</span><span class="dv">90</span>, <span class="fl">1.0</span>)   <span class="co"># our R(90°)</span></span>
+<span id="cb50-9"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (<span class="dv">21</span>, <span class="dv">21</span>))</span>
+<span id="cb50-10"><a href="" aria-hidden="true" tabindex="-1"></a>np.argwhere(out <span class="op">==</span> <span class="dv">255</span>)     <span class="co"># [[15 10]]: row 15, below the center</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>With angle 90 the pixel goes up (counter-clockwise); with our <code>R(90°)</code> it goes down (clockwise).</li>
 </ul>
@@ -2074,14 +2176,14 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 </section>
 <section id="backward-mapping-a-loop" class="slide level2">
 <h2>Backward mapping: a loop</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="" aria-hidden="true" tabindex="-1"></a>M_inv <span class="op">=</span> np.linalg.inv(M)                 <span class="co"># the inverse, computed once</span></span>
-<span id="cb50-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
-<span id="cb50-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(h):</span>
-<span id="cb50-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(w):</span>
-<span id="cb50-5"><a href="" aria-hidden="true" tabindex="-1"></a>        sx, sy, _ <span class="op">=</span> M_inv <span class="op">@</span> (x, y, <span class="dv">1</span>)    <span class="co"># where does (x, y) come from?</span></span>
-<span id="cb50-6"><a href="" aria-hidden="true" tabindex="-1"></a>        c, r <span class="op">=</span> <span class="bu">round</span>(sx), <span class="bu">round</span>(sy)      <span class="co"># the nearest source pixel</span></span>
-<span id="cb50-7"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="dv">0</span> <span class="op">&lt;=</span> r <span class="op">&lt;</span> h <span class="kw">and</span> <span class="dv">0</span> <span class="op">&lt;=</span> c <span class="op">&lt;</span> w:</span>
-<span id="cb50-8"><a href="" aria-hidden="true" tabindex="-1"></a>            out[y, x] <span class="op">=</span> img[r, c]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="" aria-hidden="true" tabindex="-1"></a>M_inv <span class="op">=</span> np.linalg.inv(M)                 <span class="co"># the inverse, computed once</span></span>
+<span id="cb51-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
+<span id="cb51-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(h):</span>
+<span id="cb51-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(w):</span>
+<span id="cb51-5"><a href="" aria-hidden="true" tabindex="-1"></a>        sx, sy, _ <span class="op">=</span> M_inv <span class="op">@</span> (x, y, <span class="dv">1</span>)    <span class="co"># where does (x, y) come from?</span></span>
+<span id="cb51-6"><a href="" aria-hidden="true" tabindex="-1"></a>        c, r <span class="op">=</span> <span class="bu">round</span>(sx), <span class="bu">round</span>(sy)      <span class="co"># the nearest source pixel</span></span>
+<span id="cb51-7"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="dv">0</span> <span class="op">&lt;=</span> r <span class="op">&lt;</span> h <span class="kw">and</span> <span class="dv">0</span> <span class="op">&lt;=</span> c <span class="op">&lt;</span> w:</span>
+<span id="cb51-8"><a href="" aria-hidden="true" tabindex="-1"></a>            out[y, x] <span class="op">=</span> img[r, c]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>round</code> — <strong>nearest neighbor</strong>: the value of the closest pixel.</li>
 <li>About 1 second for a 400 × 300 image.</li>
@@ -2123,15 +2225,15 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 </section>
 <section id="a-vectorized-warp" class="slide level2">
 <h2>A vectorized warp</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="" aria-hidden="true" tabindex="-1"></a>ys, xs <span class="op">=</span> np.indices((h, w))                  <span class="co"># y, x of every output pixel</span></span>
-<span id="cb51-2"><a href="" aria-hidden="true" tabindex="-1"></a>coords <span class="op">=</span> np.stack([xs.ravel(), ys.ravel(), np.ones(h <span class="op">*</span> w)])   <span class="co"># (3, h*w)</span></span>
-<span id="cb51-3"><a href="" aria-hidden="true" tabindex="-1"></a>sx, sy, _ <span class="op">=</span> np.linalg.inv(M) <span class="op">@</span> coords        <span class="co"># all pixels in one product</span></span>
-<span id="cb51-4"><a href="" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> np.<span class="bu">round</span>(sx).astype(<span class="bu">int</span>).reshape(h, w)</span>
-<span id="cb51-5"><a href="" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.<span class="bu">round</span>(sy).astype(<span class="bu">int</span>).reshape(h, w)</span>
-<span id="cb51-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-7"><a href="" aria-hidden="true" tabindex="-1"></a>inside <span class="op">=</span> (r <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (r <span class="op">&lt;</span> h) <span class="op">&amp;</span> (c <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (c <span class="op">&lt;</span> w)</span>
-<span id="cb51-8"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
-<span id="cb51-9"><a href="" aria-hidden="true" tabindex="-1"></a>out[inside] <span class="op">=</span> img[r[inside], c[inside]]      <span class="co"># all pixels at once</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="" aria-hidden="true" tabindex="-1"></a>ys, xs <span class="op">=</span> np.indices((h, w))                  <span class="co"># y, x of every output pixel</span></span>
+<span id="cb52-2"><a href="" aria-hidden="true" tabindex="-1"></a>coords <span class="op">=</span> np.stack([xs.ravel(), ys.ravel(), np.ones(h <span class="op">*</span> w)])   <span class="co"># (3, h*w)</span></span>
+<span id="cb52-3"><a href="" aria-hidden="true" tabindex="-1"></a>sx, sy, _ <span class="op">=</span> np.linalg.inv(M) <span class="op">@</span> coords        <span class="co"># all pixels in one product</span></span>
+<span id="cb52-4"><a href="" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> np.<span class="bu">round</span>(sx).astype(<span class="bu">int</span>).reshape(h, w)</span>
+<span id="cb52-5"><a href="" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.<span class="bu">round</span>(sy).astype(<span class="bu">int</span>).reshape(h, w)</span>
+<span id="cb52-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="" aria-hidden="true" tabindex="-1"></a>inside <span class="op">=</span> (r <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (r <span class="op">&lt;</span> h) <span class="op">&amp;</span> (c <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (c <span class="op">&lt;</span> w)</span>
+<span id="cb52-8"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> np.zeros_like(img)</span>
+<span id="cb52-9"><a href="" aria-hidden="true" tabindex="-1"></a>out[inside] <span class="op">=</span> img[r[inside], c[inside]]      <span class="co"># all pixels at once</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>np.indices((2, 3))</code> → y: <code>[[0 0 0] [1 1 1]]</code>, x: <code>[[0 1 2] [0 1 2]]</code>.</li>
 <li><code>img[r, c]</code> with arrays <code>r</code>, <code>c</code>: one pixel for each pair <code>(r[i], c[i])</code>.</li>
@@ -2146,12 +2248,12 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
 </section>
 <section id="opencv" class="slide level2">
 <h2>OpenCV</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((cx, cy), <span class="dv">30</span>, <span class="fl">1.0</span>)               <span class="co"># 2x3</span></span>
-<span id="cb52-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h))                          <span class="co"># bilinear</span></span>
-<span id="cb52-3"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h), flags<span class="op">=</span>cv2.INTER_NEAREST)</span>
-<span id="cb52-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="" aria-hidden="true" tabindex="-1"></a>small <span class="op">=</span> cv2.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="fl">0.5</span>, fy<span class="op">=</span><span class="fl">0.5</span>, interpolation<span class="op">=</span>cv2.INTER_AREA)</span>
-<span id="cb52-6"><a href="" aria-hidden="true" tabindex="-1"></a>big <span class="op">=</span> cv2.resize(img, (<span class="dv">2</span> <span class="op">*</span> w, <span class="dv">2</span> <span class="op">*</span> h), interpolation<span class="op">=</span>cv2.INTER_CUBIC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> cv2.getRotationMatrix2D((cx, cy), <span class="dv">30</span>, <span class="fl">1.0</span>)               <span class="co"># 2x3</span></span>
+<span id="cb53-2"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h))                          <span class="co"># bilinear</span></span>
+<span id="cb53-3"><a href="" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.warpAffine(img, M, (w, h), flags<span class="op">=</span>cv2.INTER_NEAREST)</span>
+<span id="cb53-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="" aria-hidden="true" tabindex="-1"></a>small <span class="op">=</span> cv2.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="fl">0.5</span>, fy<span class="op">=</span><span class="fl">0.5</span>, interpolation<span class="op">=</span>cv2.INTER_AREA)</span>
+<span id="cb53-6"><a href="" aria-hidden="true" tabindex="-1"></a>big <span class="op">=</span> cv2.resize(img, (<span class="dv">2</span> <span class="op">*</span> w, <span class="dv">2</span> <span class="op">*</span> h), interpolation<span class="op">=</span>cv2.INTER_CUBIC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Sizes in OpenCV are <strong>(width, height)</strong> — the opposite of <code>img.shape</code>.</li>
 <li>Shrinking: <code>INTER_AREA</code> averages the pixels; nearest and bilinear skip pixels.</li>
@@ -2195,7 +2297,7 @@ T = \begin{bmatrix} 1 &amp; 0 &amp; t_x \\ 0 &amp; 1 &amp; t_y \\ 0 &amp; 0 &amp
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Digital Image Processing · updated 2026-11-24 18:57</p>
+<p>Digital Image Processing · updated 2026-11-24 23:05</p>
 </div>
 </div></div>
 

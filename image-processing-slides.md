@@ -20,9 +20,9 @@ format:
 
 ## The human eye
 
-![](media/intro_2_1.jpg){width=100%}
+![](media/intro_eye_he.svg){height=600}
 
-[Source: Soroka Medical Center website]{.small}
+[Source: Rhcastilhos, translated by benherz and Jmarchn, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Schematic_diagram_of_the_human_eye_he.svg), CC BY-SA 3.0]{.small}
 
 ## The retina
 
@@ -1457,11 +1457,47 @@ $$
 
 ## Homogeneous coordinates: everything is 3×3
 
+::: {style="font-size: 85%"}
 $$
 T = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}\qquad R = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}\qquad S = \begin{bmatrix} s_x & 0 & 0 \\ 0 & s_y & 0 \\ 0 & 0 & 1 \end{bmatrix}
 $$
+:::
 
-- Combine them by multiplying, as before: $M = T \, R \, S$ (first $S$, then $R$, then $T$).
+Combine transformations by multiplying matrices, as before:
+
+$M = T \, R \, S$ (first $S$, then $R$, then $T$).
+
+With scale and rotation expanded to 3×3, they can be multiplied with translation:
+any set of transformations combines into one matrix.
+
+## Rotating around the center
+
+With translation, we can rotate around the rectangle's center $c = (2, 1.5)$.
+
+::: {.r-stack}
+![](media/center_step1.svg){.fragment .fade-out fragment-index=1 width=580px}
+
+![](media/center_step2.svg){.fragment .fade-in-then-out fragment-index=1 width=580px}
+
+![](media/center_step3.svg){.fragment .fade-in-then-out fragment-index=2 width=580px}
+
+![](media/center_step4.svg){.fragment .fade-in fragment-index=3 width=580px}
+:::
+
+## Homogeneous coordinates: M = T(c) R T(−c)
+
+$$
+\begin{aligned}
+M &= T(c) \, R(30°) \, T(-c) \\[8pt]
+&= \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 1.5 \\ 0 & 0 & 1 \end{bmatrix}
+\begin{bmatrix} 0.866 & -0.5 & 0 \\ 0.5 & 0.866 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+\begin{bmatrix} 1 & 0 & -2 \\ 0 & 1 & -1.5 \\ 0 & 0 & 1 \end{bmatrix} \\[8pt]
+&= \begin{bmatrix} 0.866 & -0.5 & 1.018 \\ 0.5 & 0.866 & -0.799 \\ 0 & 0 & 1 \end{bmatrix}
+\end{aligned}
+$$
+
+- Right to left: first $T(-c)$, then $R$, then $T(c)$.
+- The translations choose the center of the rotation.
 
 ## In NumPy: matrix times a point
 
@@ -1495,17 +1531,105 @@ S @ (R @ p)    # [4.196 2.366]       two steps
 (S @ R) @ p    # [4.196 2.366]       one matrix: the same point
 ```
 
+## Multiple coordinates at once
+
+Instead of multiplying each $(x, y)$ on its own: put them as the columns of one matrix $P$, and multiply once.
+
+::: {.r-stack .small-math}
+::: {.fragment .fade-out fragment-index=1}
+$$
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+$$
+
+$$
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+$$
+
+$$
+R \, P = \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=1}
+$$
+\bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+$$
+
+$$
+P = \left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+$$
+
+$$
+R \, P = \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix} \left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=2}
+$$
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+$$
+
+$$
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+$$
+
+$$
+R \, P = \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=3}
+$$
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+$$
+
+$$
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+$$
+
+$$
+R \, P = \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+$$
+:::
+::: {.fragment .fade-in fragment-index=4}
+$$
+\bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}} \quad \bbox[6px,border:2px solid transparent]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}} \quad \bbox[#fbe0c4,6px,border:2px solid #c06000]{R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix} = \begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}}
+$$
+
+$$
+P = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right]
+$$
+
+$$
+R \, P = \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix} \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{matrix}} \right] = \left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{matrix}} \right]
+$$
+:::
+:::
+
+## In NumPy: a loop over the points
+
+```python
+points = [(1, 1), (1, 2), (3, 1), (3, 2)]
+
+for x, y in points:                  # a Python loop
+    print(R @ np.array([x, y]))      # one matrix multiplication per point
+
+# [0.366 1.366]
+# [-0.134  2.232]
+# [2.098 2.366]
+# [1.598 3.232]
+```
+
 ## In NumPy: all the points at once
 
 ```python
-P = np.array([[1, 1, 3, 3],          # x of the four corners
-              [1, 2, 1, 2]])         # y of the four corners
+P = np.array([[1, 1, 3, 3],          # x of the four points
+              [1, 2, 1, 2]])         # y of the four points
 
 R @ P          # [[ 0.366 -0.134  2.098  1.598]
                #  [ 1.366  2.232  2.366  3.232]]
 ```
 
-- Each column is a point. One `@`, no loop, and all four corners are rotated.
+- Instead of the loop: one `@` rotates all four points, one in each column.
+- NumPy multiplies matrices very fast: for the millions of pixels of an image,
+  one `@` on a matrix of coordinates is much faster than a loop over the points.
 
 ## In NumPy: homogeneous coordinates
 
@@ -1540,7 +1664,7 @@ img.shape          # (300, 400, 3): 300 rows (h), 400 columns (w)
 img[10, 50]        # the pixel at x = 50, y = 10
 ```
 
-## Rotating around the center
+## Images: rotating around the center
 
 ![](media/rect_center.svg){width=100%}
 
