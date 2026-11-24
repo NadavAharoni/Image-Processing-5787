@@ -45,3 +45,71 @@
   border: 1px solid #888;
   vertical-align: middle;
 }
+
+/* "Try it": an interactive slide, a matrix times a point (geometric transformations) */
+.tryit {
+  display: flex;
+  gap: 1.5em;
+  align-items: flex-start;
+}
+.tryit-calc {
+  flex: 1;
+}
+.tryit-eq {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.reveal .tryit table.tryit-mat {
+  margin: 0;
+  font-size: 1em;
+  border-left: 3px solid #333;
+  border-right: 3px solid #333;
+  border-radius: 8px;
+  border-collapse: separate;
+}
+.reveal .tryit table.tryit-mat td {
+  border: none;
+  padding: 0.15em 0.3em;
+  text-align: center;
+}
+.tryit-mat input {
+  width: 3.6em;
+  font-size: 0.8em;
+  text-align: center;
+  font-family: inherit;
+}
+.tryit-mat input.tryit-in {
+  color: #c06000;
+  font-weight: bold;
+}
+.tryit-out {
+  color: #2050c0;
+  font-weight: bold;
+  min-width: 3.6em;
+}
+.tryit-steps {
+  margin-top: 0.8em;
+  font-size: 0.75em;
+  line-height: 1.6;
+}
+.tryit-note {
+  font-size: 0.6em;
+  color: #666;
+}
+.tryit button {
+  font-size: 0.55em;
+  font-family: inherit;
+}
+.reveal .tryit table.tryit-mat tr {
+  border: none;
+  background: none;
+}
+
+/* A larger equation, e.g. ::: {.r-stack .big-math} */
+.reveal .big-math {
+  font-size: 1.7em;
+}
+.reveal .mid-math {
+  font-size: 1.35em;
+}

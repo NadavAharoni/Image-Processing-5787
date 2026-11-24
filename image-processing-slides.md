@@ -1013,89 +1013,539 @@ out[mask] = img[mask]                          # color only in the mask
 
 # Geometric transformations
 
+## What we want to do
+
+![](media/geom_intro.png){width=100%}
+
 ## Moving pixels
 
 - Point operations change the **values** of the pixels.
 - Geometric transformations change their **positions**: scale, rotate, translate, mirror.
-- Two questions:
-  - Where does each pixel go? — a matrix.
-  - Which value does an output pixel get, between the pixels? — interpolation.
 
-## Coordinates
+![](media/point_vs_geometric.png){width=100%}
 
-- The pixel in row `r`, column `c` is the point `(x, y) = (c, r)`.
-- x to the right, **y down**. The origin `(0, 0)` is the top-left pixel.
-- Arrays: `img[y, x]` — row first. Matrices and OpenCV: `(x, y)`.
+## Linear algebra reminder: matrix times a point
 
-## Matrix times vector
-
+::: {.r-stack .big-math}
+::: {.fragment .fade-out fragment-index=1}
 $$
-\begin{bmatrix} a & b \\ c & d \end{bmatrix}
+\begin{bmatrix}
+\bbox[6px,border:2px solid transparent]{a \quad b} \\
+\bbox[6px,border:2px solid transparent]{c \quad d}
+\end{bmatrix}
+\left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} x \\ y \end{matrix}} \right] =
+\begin{bmatrix}
+\bbox[6px,border:2px solid transparent]{a x + b y} \\
+\bbox[6px,border:2px solid transparent]{c x + d y}
+\end{bmatrix}
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=1}
+$$
+\begin{bmatrix}
+\bbox[#fbe0c4,6px,border:2px solid #c06000]{a \quad b} \\
+\bbox[6px,border:2px solid transparent]{c \quad d}
+\end{bmatrix}
+\left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} x \\ y \end{matrix}} \right] =
+\begin{bmatrix}
+\bbox[#fbe0c4,6px,border:2px solid #c06000]{a x + b y} \\
+\bbox[6px,border:2px solid transparent]{c x + d y}
+\end{bmatrix}
+$$
+:::
+::: {.fragment .fade-in fragment-index=2}
+$$
+\begin{bmatrix}
+\bbox[6px,border:2px solid transparent]{a \quad b} \\
+\bbox[#d6e2fb,6px,border:2px solid #2050c0]{c \quad d}
+\end{bmatrix}
+\left[ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{\begin{matrix} x \\ y \end{matrix}} \right] =
+\begin{bmatrix}
+\bbox[6px,border:2px solid transparent]{a x + b y} \\
+\bbox[#d6e2fb,6px,border:2px solid #2050c0]{c x + d y}
+\end{bmatrix}
+$$
+:::
+:::
+
+## Linear algebra reminder: identity
+
+::: {.big-math}
+$$
+\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
 \begin{bmatrix} x \\ y \end{bmatrix} =
-\begin{bmatrix} a x + b y \\ c x + d y \end{bmatrix}
+\begin{bmatrix} 1 \cdot x + 0 \cdot y \\ 0 \cdot x + 1 \cdot y \end{bmatrix} =
+\begin{bmatrix} x \\ y \end{bmatrix}
 $$
+:::
 
-```python
-A = np.array([[1, 2],
-              [3, 4]])
-p = np.array([5, 6])
-A @ p          # [17 39]        matrix product
-A * p          # [[ 5 12]       element by element (broadcasting)!
-               #  [15 24]]
-```
+## Linear algebra reminder: scale
 
-## Scaling and rotation
+**Uniform scale**
+
+::: {.mid-math}
+$$
+\begin{bmatrix} s & 0 \\ 0 & s \end{bmatrix}
+\begin{bmatrix} x \\ y \end{bmatrix} =
+\begin{bmatrix} s \cdot x + 0 \cdot y \\ 0 \cdot x + s \cdot y \end{bmatrix} =
+\begin{bmatrix} s x \\ s y \end{bmatrix}
+$$
+:::
+
+**Non-uniform scale**
+
+::: {.mid-math}
+$$
+\begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix}
+\begin{bmatrix} x \\ y \end{bmatrix} =
+\begin{bmatrix} s_x \cdot x + 0 \cdot y \\ 0 \cdot x + s_y \cdot y \end{bmatrix} =
+\begin{bmatrix} s_x x \\ s_y y \end{bmatrix}
+$$
+:::
+
+## Linear algebra reminder: rotation
 
 $$
-S = \begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix}
-\qquad
 R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}
 $$
 
-![](media/geom_basic.svg){width=100%}
+For θ = 30°: cos 30° ≈ 0.866, sin 30° = 0.5.
 
-- Dashed: before. Blue: after. The black dot is the origin — it never moves.
+$$
+R(30°) = \begin{bmatrix} \cos 30° & -\sin 30° \\ \sin 30° & \cos 30° \end{bmatrix}
+= \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+$$
 
-## Rotation: which way?
+## Linear algebra reminder: rotating a rectangle
 
-- In math (y up), `R(θ)` with θ > 0 turns **counter-clockwise**.
-- In an image (y down), the same matrix turns **clockwise** on the screen.
-- `cv2.getRotationMatrix2D(center, angle, scale)`: angle > 0 is counter-clockwise on the screen —
-  it uses `R(−angle)`.
+![](media/rot_points.svg){width=75% fig-align="center"}
 
-## Order matters
+- Rotate it by 30° around the origin: multiply each corner by R(30°).
 
-![](media/geom_order.svg){width=90%}
+## Linear algebra reminder: rotating each corner
 
-- `R @ S @ p`: first `S`, then `R` — the matrix next to the point acts first.
-- `R @ S` and `S @ R` are different transformations.
-- Multiply the matrices once, then apply one matrix to all the points.
+Rotate it by 30° around the origin: multiply each corner by R(30°).
 
-## Translation is not a 2×2 matrix
+$$
+\begin{aligned}
+\begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{1}} \end{bmatrix}
+&= \begin{bmatrix} 0.866 \cdot 1 - 0.5 \cdot 1 \\ 0.5 \cdot 1 + 0.866 \cdot 1 \end{bmatrix} =
+\begin{bmatrix} {\color{#2050c0}{0.366}} \\ {\color{#2050c0}{1.366}} \end{bmatrix}
+\\[8pt]
+\begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} {\color{#c06000}{1}} \\ {\color{#c06000}{2}} \end{bmatrix}
+&= \begin{bmatrix} 0.866 \cdot 1 - 0.5 \cdot 2 \\ 0.5 \cdot 1 + 0.866 \cdot 2 \end{bmatrix} =
+\begin{bmatrix} {\color{#2050c0}{-0.134}} \\ {\color{#2050c0}{2.232}} \end{bmatrix}
+\\[8pt]
+\begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix}
+&= \begin{bmatrix} 0.866 \cdot 3 - 0.5 \cdot 1 \\ 0.5 \cdot 3 + 0.866 \cdot 1 \end{bmatrix} =
+\begin{bmatrix} {\color{#2050c0}{2.098}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}
+\\[8pt]
+\begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{2}} \end{bmatrix}
+&= \begin{bmatrix} 0.866 \cdot 3 - 0.5 \cdot 2 \\ 0.5 \cdot 3 + 0.866 \cdot 2 \end{bmatrix} =
+\begin{bmatrix} {\color{#2050c0}{1.598}} \\ {\color{#2050c0}{3.232}} \end{bmatrix}
+\end{aligned}
+$$
 
-- Translation: `(x, y)` → `(x + tx, y + ty)`.
-- Any 2×2 matrix sends `(0, 0)` to `(0, 0)`, so it cannot translate.
-- The trick — **homogeneous coordinates**: add a 1, `(x, y)` → `(x, y, 1)`.
+## Linear algebra reminder: before and after
+
+![](media/rot_result.svg){width=75% fig-align="center"}
+
+- Each point turned 30° counter-clockwise around the origin (dotted: its path, on a circle).
+
+## Linear algebra reminder: try it
+
+```{=html}
+<div class="tryit">
+  <div class="tryit-calc">
+    <div class="tryit-eq">
+      <table class="tryit-mat">
+        <tr><td><input id="ti-a" value="0.866"></td><td><input id="ti-b" value="-0.5"></td></tr>
+        <tr><td><input id="ti-c" value="0.5"></td><td><input id="ti-d" value="0.866"></td></tr>
+      </table>
+      <table class="tryit-mat">
+        <tr><td><input id="ti-x" value="3" class="tryit-in"></td></tr>
+        <tr><td><input id="ti-y" value="1" class="tryit-in"></td></tr>
+      </table>
+      <span class="tryit-op">=</span>
+      <table class="tryit-mat">
+        <tr><td id="ti-nx" class="tryit-out"></td></tr>
+        <tr><td id="ti-ny" class="tryit-out"></td></tr>
+      </table>
+    </div>
+    <div id="ti-steps" class="tryit-steps"></div>
+    <p class="tryit-note">Change the point (orange) or the matrix. Faded: the rectangle, moved by the same matrix.</p>
+    <button id="ti-reset">back to: rotate 30°, point (3, 1)</button>
+  </div>
+  <svg id="ti-plot" viewBox="0 0 420 420" width="480" height="480"></svg>
+</div>
+<script>
+(function () {
+  const ids = ["a", "b", "c", "d", "x", "y"];
+  const start = {a: "0.866", b: "-0.5", c: "0.5", d: "0.866", x: "3", y: "1"};
+  const rect = [[1, 1], [1, 2], [3, 1], [3, 2]];
+  const el = id => document.getElementById("ti-" + id);
+  const fmt = v => String(parseFloat(v.toFixed(3))).replace("-", "−");
+  const par = v => v < 0 ? "(" + fmt(v) + ")" : fmt(v);
+  const R = 5, S = 42, C = 210;                  // range -5..5, 42 px per unit, origin at the center
+  const X = x => C + S * x, Y = y => C - S * y;  // math axes: y up
+  const NS = "http://www.w3.org/2000/svg";
+  function add(svg, tag, attrs, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    svg.appendChild(e);
+  }
+  function draw(v, nx, ny) {
+    const svg = el("plot");
+    svg.innerHTML = "";
+    for (let i = -R; i <= R; i++) {
+      add(svg, "line", {x1: X(i), y1: Y(-R), x2: X(i), y2: Y(R), stroke: "#e4e4e4"});
+      add(svg, "line", {x1: X(-R), y1: Y(i), x2: X(R), y2: Y(i), stroke: "#e4e4e4"});
+    }
+    add(svg, "line", {x1: X(-R), y1: Y(0), x2: X(R), y2: Y(0), stroke: "black"});
+    add(svg, "line", {x1: X(0), y1: Y(-R), x2: X(0), y2: Y(R), stroke: "black"});
+    add(svg, "text", {x: X(R) - 4, y: Y(0) - 6, "text-anchor": "end", "font-size": 19}, "x");
+    add(svg, "text", {x: X(0) + 6, y: Y(R) + 16, "font-size": 19}, "y");
+    if (!isFinite(nx) || !isFinite(ny)) return;
+    const moved = rect.map(([px, py]) => [v.a * px + v.b * py, v.c * px + v.d * py]);
+    for (const [pts, color] of [[rect, "#c06000"], [moved, "#2050c0"]]) {   // the rectangle, before and after
+      const loop = [0, 2, 3, 1].map(i => X(pts[i][0]) + "," + Y(pts[i][1])).join(" ");
+      add(svg, "polygon", {points: loop, fill: "none", stroke: color, "stroke-width": 1.5, opacity: 0.35});
+      for (const [px, py] of pts) add(svg, "circle", {cx: X(px), cy: Y(py), r: 5, fill: color, opacity: 0.35});
+    }
+    for (const [px, py, color] of [[v.x, v.y, "#c06000"], [nx, ny, "#2050c0"]]) {
+      add(svg, "line", {x1: X(0), y1: Y(0), x2: X(px), y2: Y(py), stroke: color, "stroke-dasharray": "4 4"});
+      add(svg, "circle", {cx: X(px), cy: Y(py), r: 7, fill: color});
+      const right = px > 2;                      // labels of points near the right edge go to the left
+      add(svg, "text", {x: X(px) + (right ? -10 : 10), y: Y(py) - 10, fill: color, "font-size": 19,
+                        "text-anchor": right ? "end" : "start"},
+          "(" + fmt(px) + ", " + fmt(py) + ")");
+    }
+  }
+  function update() {
+    const v = {};
+    for (const id of ids) v[id] = parseFloat(el(id).value.replace("−", "-"));
+    const ok = ids.every(id => isFinite(v[id]));
+    const nx = v.a * v.x + v.b * v.y, ny = v.c * v.x + v.d * v.y;
+    el("nx").textContent = ok ? fmt(nx) : "?";
+    el("ny").textContent = ok ? fmt(ny) : "?";
+    el("steps").innerHTML = ok
+      ? "new x = " + fmt(v.a) + " · " + par(v.x) + " + " + par(v.b) + " · " + par(v.y) + " = " + fmt(nx) + "<br>" +
+        "new y = " + fmt(v.c) + " · " + par(v.x) + " + " + par(v.d) + " · " + par(v.y) + " = " + fmt(ny)
+      : "Type a number in every box.";
+    draw(v, ok ? nx : NaN, ok ? ny : NaN);
+  }
+  for (const id of ids) el(id).addEventListener("input", update);
+  el("reset").addEventListener("click", () => { for (const id of ids) el(id).value = start[id]; update(); });
+  update();
+})();
+</script>
+```
+
+## Linear algebra reminder: two transformations
+
+First rotate by 30°, then stretch x by 2:
+
+$$
+\begin{aligned}
+R \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix}
+&= \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} =
+\begin{bmatrix} 2.098 \\ 2.366 \end{bmatrix}
+\\[12pt]
+S \begin{bmatrix} 2.098 \\ 2.366 \end{bmatrix}
+&= \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}
+\begin{bmatrix} 2.098 \\ 2.366 \end{bmatrix} =
+\begin{bmatrix} {\color{#2050c0}{4.196}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}
+\end{aligned}
+$$
+
+Two multiplications for every point:
+
+$$
+S \, (R \, p)
+$$
+
+## Linear algebra reminder: combine the matrices
+
+$$
+S \, (R \, p) = (S \, R) \, p
+$$
+
+::: {.r-stack}
+::: {.fragment .fade-out fragment-index=1}
+$$
+\begin{aligned}
+S \, R &= \left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{2 \quad 0} \\ \bbox[6px,border:2px solid transparent]{0 \quad 1} \end{matrix} \right]
+\left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} 0.866 \\ 0.5 \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} -0.5 \\ 0.866 \end{matrix}} \right]
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{2 \cdot 0.866 + 0 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{2 \cdot (-0.5) + 0 \cdot 0.866} \\ \bbox[6px,border:2px solid transparent]{0 \cdot 0.866 + 1 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{0 \cdot (-0.5) + 1 \cdot 0.866} \end{bmatrix}
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{1.732} & \bbox[6px,border:2px solid transparent]{-1} \\ \bbox[6px,border:2px solid transparent]{0.5} & \bbox[6px,border:2px solid transparent]{0.866} \end{bmatrix}
+\end{aligned}
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=1}
+$$
+\begin{aligned}
+S \, R &= \left[ \begin{matrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{2 \quad 0} \\ \bbox[6px,border:2px solid transparent]{0 \quad 1} \end{matrix} \right]
+\left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} 0.866 \\ 0.5 \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} -0.5 \\ 0.866 \end{matrix}} \right]
+\\[8pt]
+&= \begin{bmatrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{2 \cdot 0.866 + 0 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{2 \cdot (-0.5) + 0 \cdot 0.866} \\ \bbox[6px,border:2px solid transparent]{0 \cdot 0.866 + 1 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{0 \cdot (-0.5) + 1 \cdot 0.866} \end{bmatrix}
+\\[8pt]
+&= \begin{bmatrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{1.732} & \bbox[6px,border:2px solid transparent]{-1} \\ \bbox[6px,border:2px solid transparent]{0.5} & \bbox[6px,border:2px solid transparent]{0.866} \end{bmatrix}
+\end{aligned}
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=2}
+$$
+\begin{aligned}
+S \, R &= \left[ \begin{matrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{2 \quad 0} \\ \bbox[6px,border:2px solid transparent]{0 \quad 1} \end{matrix} \right]
+\left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} 0.866 \\ 0.5 \end{matrix}} \; \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} -0.5 \\ 0.866 \end{matrix}} \right]
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{2 \cdot 0.866 + 0 \cdot 0.5} & \bbox[#fbe0c4,6px,border:2px solid #c06000]{2 \cdot (-0.5) + 0 \cdot 0.866} \\ \bbox[6px,border:2px solid transparent]{0 \cdot 0.866 + 1 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{0 \cdot (-0.5) + 1 \cdot 0.866} \end{bmatrix}
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{1.732} & \bbox[#fbe0c4,6px,border:2px solid #c06000]{-1} \\ \bbox[6px,border:2px solid transparent]{0.5} & \bbox[6px,border:2px solid transparent]{0.866} \end{bmatrix}
+\end{aligned}
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=3}
+$$
+\begin{aligned}
+S \, R &= \left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{2 \quad 0} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0 \quad 1} \end{matrix} \right]
+\left[ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{\begin{matrix} 0.866 \\ 0.5 \end{matrix}} \; \bbox[6px,border:2px solid transparent]{\begin{matrix} -0.5 \\ 0.866 \end{matrix}} \right]
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{2 \cdot 0.866 + 0 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{2 \cdot (-0.5) + 0 \cdot 0.866} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0 \cdot 0.866 + 1 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{0 \cdot (-0.5) + 1 \cdot 0.866} \end{bmatrix}
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{1.732} & \bbox[6px,border:2px solid transparent]{-1} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0.5} & \bbox[6px,border:2px solid transparent]{0.866} \end{bmatrix}
+\end{aligned}
+$$
+:::
+::: {.fragment .fade-in fragment-index=4}
+$$
+\begin{aligned}
+S \, R &= \left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{2 \quad 0} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0 \quad 1} \end{matrix} \right]
+\left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} 0.866 \\ 0.5 \end{matrix}} \; \bbox[#d6e2fb,6px,border:2px solid #2050c0]{\begin{matrix} -0.5 \\ 0.866 \end{matrix}} \right]
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{2 \cdot 0.866 + 0 \cdot 0.5} & \bbox[6px,border:2px solid transparent]{2 \cdot (-0.5) + 0 \cdot 0.866} \\ \bbox[6px,border:2px solid transparent]{0 \cdot 0.866 + 1 \cdot 0.5} & \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0 \cdot (-0.5) + 1 \cdot 0.866} \end{bmatrix}
+\\[8pt]
+&= \begin{bmatrix} \bbox[6px,border:2px solid transparent]{1.732} & \bbox[6px,border:2px solid transparent]{-1} \\ \bbox[6px,border:2px solid transparent]{0.5} & \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0.866} \end{bmatrix}
+\end{aligned}
+$$
+:::
+:::
+
+## Linear algebra reminder: one matrix
+
+$$
+(S \, R) \begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} =
+\begin{bmatrix} 1.732 & -1 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} {\color{#c06000}{3}} \\ {\color{#c06000}{1}} \end{bmatrix} =
+\begin{bmatrix} 1.732 \cdot 3 - 1 \cdot 1 \\ 0.5 \cdot 3 + 0.866 \cdot 1 \end{bmatrix} =
+\begin{bmatrix} {\color{#2050c0}{4.196}} \\ {\color{#2050c0}{2.366}} \end{bmatrix}
+$$
+
+- The same point as in two steps.
+- Multiply the matrices once; then one multiplication for every point, however many transformations.
+
+## Linear algebra reminder: the order matters
+
+![](media/rot_scale_order.svg){width=100%}
+
+- Faded: the original. Dashed: after the first step. Blue: the result.
+
+## Linear algebra reminder: S R ≠ R S
+
+$$
+\begin{aligned}
+S \, R &= \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}
+\begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+= \begin{bmatrix} 1.732 & -1 \\ 0.5 & 0.866 \end{bmatrix}
+\\[12pt]
+R \, S &= \begin{bmatrix} 0.866 & -0.5 \\ 0.5 & 0.866 \end{bmatrix}
+\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}
+= \begin{bmatrix} 1.732 & -0.5 \\ 1 & 0.866 \end{bmatrix}
+\end{aligned}
+$$
+
+- In $S \, R \, p$, the matrix next to the point acts first: $R$, then $S$.
+
+## Linear algebra reminder: translation
+
+![](media/translate.svg){width=75% fig-align="center"}
+
+::: {.mid-math}
+$$
+\begin{bmatrix} x \\ y \end{bmatrix} \to \begin{bmatrix} x + t_x \\ y + t_y \end{bmatrix}
+$$
+:::
+
+## Linear algebra reminder: 2×2 can't translate
+
+::: {.mid-math}
+$$
+\begin{bmatrix} a & b \\ c & d \end{bmatrix} \begin{bmatrix} 0 \\ 0 \end{bmatrix} = \begin{bmatrix} a \cdot 0 + b \cdot 0 \\ c \cdot 0 + d \cdot 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}
+$$
+:::
+
+- A 2×2 matrix never moves the origin, so it cannot translate.
 
 ## Homogeneous coordinates
 
+Add a third coordinate, always 1:
+
+::: {.big-math}
 $$
-T = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}
-\qquad
-T \begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = \begin{bmatrix} x + t_x \\ y + t_y \\ 1 \end{bmatrix}
-\qquad
-R = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}
+\begin{bmatrix} x \\ y \end{bmatrix} \to \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
+$$
+:::
+
+## Homogeneous coordinates: translation
+
+::: {.r-stack}
+::: {.fragment .fade-out fragment-index=1}
+$$
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{1 \quad 0 \quad t_x} \\ \bbox[6px,border:2px solid transparent]{0 \quad 1 \quad t_y} \\ \bbox[6px,border:2px solid transparent]{0 \quad 0 \quad 1} \end{matrix} \right]
+\left[ \bbox[6px,border:2px solid transparent]{\begin{matrix} x \\ y \\ 1 \end{matrix}} \right] =
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{1 \cdot x + 0 \cdot y + t_x \cdot 1} \\ \bbox[6px,border:2px solid transparent]{0 \cdot x + 1 \cdot y + t_y \cdot 1} \\ \bbox[6px,border:2px solid transparent]{0 \cdot x + 0 \cdot y + 1 \cdot 1} \end{matrix} \right] =
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{x + t_x} \\ \bbox[6px,border:2px solid transparent]{y + t_y} \\ \bbox[6px,border:2px solid transparent]{1} \end{matrix} \right]
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=1}
+$$
+\left[ \begin{matrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{1 \quad 0 \quad t_x} \\ \bbox[6px,border:2px solid transparent]{0 \quad 1 \quad t_y} \\ \bbox[6px,border:2px solid transparent]{0 \quad 0 \quad 1} \end{matrix} \right]
+\left[ \bbox[#fbe0c4,6px,border:2px solid #c06000]{\begin{matrix} x \\ y \\ 1 \end{matrix}} \right] =
+\left[ \begin{matrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{1 \cdot x + 0 \cdot y + t_x \cdot 1} \\ \bbox[6px,border:2px solid transparent]{0 \cdot x + 1 \cdot y + t_y \cdot 1} \\ \bbox[6px,border:2px solid transparent]{0 \cdot x + 0 \cdot y + 1 \cdot 1} \end{matrix} \right] =
+\left[ \begin{matrix} \bbox[#fbe0c4,6px,border:2px solid #c06000]{x + t_x} \\ \bbox[6px,border:2px solid transparent]{y + t_y} \\ \bbox[6px,border:2px solid transparent]{1} \end{matrix} \right]
+$$
+:::
+::: {.fragment .fade-in-then-out fragment-index=2}
+$$
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{1 \quad 0 \quad t_x} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0 \quad 1 \quad t_y} \\ \bbox[6px,border:2px solid transparent]{0 \quad 0 \quad 1} \end{matrix} \right]
+\left[ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{\begin{matrix} x \\ y \\ 1 \end{matrix}} \right] =
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{1 \cdot x + 0 \cdot y + t_x \cdot 1} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{0 \cdot x + 1 \cdot y + t_y \cdot 1} \\ \bbox[6px,border:2px solid transparent]{0 \cdot x + 0 \cdot y + 1 \cdot 1} \end{matrix} \right] =
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{x + t_x} \\ \bbox[#d6e2fb,6px,border:2px solid #2050c0]{y + t_y} \\ \bbox[6px,border:2px solid transparent]{1} \end{matrix} \right]
+$$
+:::
+::: {.fragment .fade-in fragment-index=3}
+$$
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{1 \quad 0 \quad t_x} \\ \bbox[6px,border:2px solid transparent]{0 \quad 1 \quad t_y} \\ \bbox[#d9efd9,6px,border:2px solid #2a7a3a]{0 \quad 0 \quad 1} \end{matrix} \right]
+\left[ \bbox[#d9efd9,6px,border:2px solid #2a7a3a]{\begin{matrix} x \\ y \\ 1 \end{matrix}} \right] =
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{1 \cdot x + 0 \cdot y + t_x \cdot 1} \\ \bbox[6px,border:2px solid transparent]{0 \cdot x + 1 \cdot y + t_y \cdot 1} \\ \bbox[#d9efd9,6px,border:2px solid #2a7a3a]{0 \cdot x + 0 \cdot y + 1 \cdot 1} \end{matrix} \right] =
+\left[ \begin{matrix} \bbox[6px,border:2px solid transparent]{x + t_x} \\ \bbox[6px,border:2px solid transparent]{y + t_y} \\ \bbox[#d9efd9,6px,border:2px solid #2a7a3a]{1} \end{matrix} \right]
+$$
+:::
+:::
+
+## Homogeneous coordinates: rotation and scale
+
+Rotation and scale get one more row and column: zeros, and 1 at the bottom.
+
+$$
+\begin{bmatrix} s_x & 0 & {\color{#c06000}{0}} \\ 0 & s_y & {\color{#c06000}{0}} \\ {\color{#c06000}{0}} & {\color{#c06000}{0}} & {\color{#c06000}{1}} \end{bmatrix}\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = \begin{bmatrix} s_x x \\ s_y y \\ 1 \end{bmatrix}
 $$
 
-- Every transformation is now a 3×3 matrix, and composing is multiplying: `M = T @ R @ S`.
-- The last row is always `[0, 0, 1]`. OpenCV uses only the top 2 rows: a 2×3 matrix, `M[:2]`.
+$$
+\begin{bmatrix} \cos\theta & -\sin\theta & {\color{#c06000}{0}} \\ \sin\theta & \cos\theta & {\color{#c06000}{0}} \\ {\color{#c06000}{0}} & {\color{#c06000}{0}} & {\color{#c06000}{1}} \end{bmatrix}\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = \begin{bmatrix} x \cos\theta - y \sin\theta \\ x \sin\theta + y \cos\theta \\ 1 \end{bmatrix}
+$$
+
+- The same results as with 2×2; the 1 stays 1.
+
+## Homogeneous coordinates: everything is 3×3
+
+$$
+T = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}\qquad R = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}\qquad S = \begin{bmatrix} s_x & 0 & 0 \\ 0 & s_y & 0 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+- Combine them by multiplying, as before: $M = T \, R \, S$ (first $S$, then $R$, then $T$).
+
+## In NumPy: matrix times a point
+
+```python
+np.set_printoptions(precision=3)     # print 3 digits after the point
+
+t = np.deg2rad(30)
+R = np.array([[np.cos(t), -np.sin(t)],
+              [np.sin(t),  np.cos(t)]])
+p = np.array([3, 1])
+
+R @ p          # [2.098 2.366]       matrix times a point
+R * p          # [[ 2.598 -0.5  ]    element by element (broadcasting)!
+               #  [ 1.5    0.866]]
+```
+
+- `@` is matrix multiplication; `*` is not.
+
+## In NumPy: combining matrices
+
+```python
+S = np.array([[2, 0],
+              [0, 1]])
+
+S @ R          # [[ 1.732 -1.   ]
+               #  [ 0.5    0.866]]
+R @ S          # [[ 1.732 -0.5  ]    not the same as S @ R
+               #  [ 1.     0.866]]
+
+S @ (R @ p)    # [4.196 2.366]       two steps
+(S @ R) @ p    # [4.196 2.366]       one matrix: the same point
+```
+
+## In NumPy: all the points at once
+
+```python
+P = np.array([[1, 1, 3, 3],          # x of the four corners
+              [1, 2, 1, 2]])         # y of the four corners
+
+R @ P          # [[ 0.366 -0.134  2.098  1.598]
+               #  [ 1.366  2.232  2.366  3.232]]
+```
+
+- Each column is a point. One `@`, no loop, and all four corners are rotated.
+
+## In NumPy: homogeneous coordinates
+
+```python
+P3 = np.vstack([P, np.ones(4)])      # add a row of 1s
+
+T = np.array([[1, 0, 1],             # translate by (1, 1.5)
+              [0, 1, 1.5],
+              [0, 0, 1]])
+
+T @ P3         # [[2.  2.  4.  4. ]
+               #  [2.5 3.5 2.5 3.5]
+               #  [1.  1.  1.  1. ]]
+```
+
+## Images: y points down
+
+![](media/y_down.svg){width=100%}
+
+- In an image the origin is the top-left pixel, and y grows **downward**.
+- The same matrix and the same numbers: on the screen, the rotation now looks **clockwise**.
+
+## Images: (x, y) and img[row, col]
+
+- The pixel in row `r`, column `c` is the point `(x, y) = (c, r)`: x is the column, y is the row.
+- NumPy indexes the row first: `img[y, x]`.
+- `img.shape` is `(h, w, 3)`: the height (number of rows) first.
+
+```python
+img = np.zeros((300, 400, 3), np.uint8)
+img.shape          # (300, 400, 3): 300 rows (h), 400 columns (w)
+img[10, 50]        # the pixel at x = 50, y = 10
+```
 
 ## Rotating around the center
 
-![](media/geom_center.svg){width=85%}
+![](media/rect_center.svg){width=100%}
 
-- `R` alone rotates around `(0, 0)` — the top-left corner.
-- Around the center `c`: move `c` to the origin, rotate, move back — `T(c) @ R @ T(−c)`.
+- `R` alone rotates around `(0, 0)`, the top-left corner.
+- Around the center `c`: move `c` to the origin, rotate, move back: `T(c) @ R @ T(−c)`.
 
 ## Rotating around the center: code
 
@@ -1108,11 +1558,56 @@ back = np.array([[1, 0, cx],
                  [0, 1, cy],
                  [0, 0, 1]])
 M = back @ rotate @ to_origin               # rotate: R as a 3x3 matrix
-
-cv2.getRotationMatrix2D((cx, cy), -30, 1.0)  # == M[:2] for a 30° rotate
 ```
 
 - The center stays in place; every other point turns around it.
+
+## OpenCV: coordinates
+
+- OpenCV uses image coordinates: the origin is the top-left pixel, x to the right, **y down**. Nothing is flipped.
+- Everything is in **(x, y)** order, the column first, the reverse of `img[row, col]`:
+  - a point is `(x, y)`;
+  - a size is `(width, height)`, the reverse of `img.shape`;
+  - a transformation is the top two rows of our 3×3 matrix, `M[:2]`, applied to `(x, y, 1)`.
+
+```python
+h, w = img.shape[:2]
+out = cv2.warpAffine(img, M[:2], (w, h))     # the size: (width, height)
+```
+
+- So the matrices from the previous slides work as they are.
+
+## OpenCV: which way does it rotate?
+
+- Our `R(θ)` with θ > 0 turns **clockwise** on the screen, because y points down.
+- `cv2.getRotationMatrix2D(center, angle, scale)` turns **counter-clockwise** on the screen for angle > 0:
+  it builds `R(−angle)`.
+
+```python
+cv2.getRotationMatrix2D((0, 0), -30, 1.0)
+# [[ 0.866 -0.5    0.   ]
+#  [ 0.5    0.866  0.   ]]      our R(30°), with a third column of 0s
+
+cv2.getRotationMatrix2D((cx, cy), -30, 1.0)
+# the same as M[:2] from "Rotating around the center: code"
+```
+
+## OpenCV: a test
+
+```python
+img = np.zeros((21, 21), np.uint8)
+img[10, 15] = 255           # one pixel, right of the center (10, 10)
+
+M = cv2.getRotationMatrix2D((10, 10), 90, 1.0)
+out = cv2.warpAffine(img, M, (21, 21))
+np.argwhere(out == 255)     # [[ 5 10]]: row 5, above the center
+
+M = cv2.getRotationMatrix2D((10, 10), -90, 1.0)   # our R(90°)
+out = cv2.warpAffine(img, M, (21, 21))
+np.argwhere(out == 255)     # [[15 10]]: row 15, below the center
+```
+
+- With angle 90 the pixel goes up (counter-clockwise); with our `R(90°)` it goes down (clockwise).
 
 # Warping images
 
