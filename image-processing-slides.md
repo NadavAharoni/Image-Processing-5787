@@ -20,7 +20,7 @@ format:
 
 ## The human eye
 
-![](media/intro_eye_he.svg){height=600}
+![](media/intro_eye_he.svg){height=530 fig-align="center"}
 
 [Source: Rhcastilhos, translated by benherz and Jmarchn, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Schematic_diagram_of_the_human_eye_he.svg), CC BY-SA 3.0]{.small}
 
