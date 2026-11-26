@@ -26,28 +26,47 @@ format:
 
 ## The retina
 
-![](media/intro_3_1.jpg){height=600}
+![](media/intro_retina.svg){height=520 fig-align="center"}
+
+[Source: Bfazek, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Schematic_diagram_of_the_eye_and_retina.svg), CC BY-SA 4.0]{.small}
 
 ## Sensitivity to color
 
-![](media/intro_4_1.png){width=80%}
+![](media/intro_cone_response.svg){width=80%}
 
-[Source: researchgate.net/figure/Normalized-spectral-sensitivity-of-retinal-rod-and-cone-cells_fig7_265155524]{.small}
+[Source: Maxim Razin, DrBob and Zeimusu (after Bowmaker and Dartnall, 1980), [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Cone-response-en.svg), CC BY-SA 3.0]{.small}
 
 ## RGB color model
 
 :::: {.columns}
-::: {.column width="30%"}
-![](media/intro_5_1.png){width=100%}
+::: {.column width="35%"}
+![](media/intro_rgb_venn.svg){width=100%}
 :::
-::: {.column width="70%"}
-![](media/intro_5_2.jpg){width=100%}
+::: {.column width="65%"}
+![](media/intro_lcd_subpixels.jpg){width=100%}
 :::
 ::::
 
+[Sources: Immanuelle, [Venn diagram rgb](https://commons.wikimedia.org/wiki/File:Venn_diagram_rgb.svg), CC BY-SA 4.0; Daniel Schwen, [LCD Pixels Macro](https://commons.wikimedia.org/wiki/File:LCD_Pixels_Macro.jpg), CC BY-SA 2.5 (both Wikimedia Commons)]{.small}
+
 ## RGB vs CMYK
 
-![](media/intro_6_1.png){height=600}
+:::: {.columns}
+::: {.column width="50%"}
+![](media/intro_rgb_venn.svg){width=100%}
+:::
+::: {.column width="50%"}
+![](media/intro_subtractive.svg){width=100%}
+:::
+::::
+
+[Sources: Immanuelle, [Venn diagram rgb](https://commons.wikimedia.org/wiki/File:Venn_diagram_rgb.svg), CC BY-SA 4.0; SharkD and others, [SubtractiveColor](https://commons.wikimedia.org/wiki/File:SubtractiveColor.svg), public domain (both Wikimedia Commons)]{.small}
+
+## CMYK: four inks
+
+![](media/intro_cmyk_separations.jpg){width=100%}
+
+[Source: Magica, [Subtractive color synthesis CMYK](https://commons.wikimedia.org/wiki/File:Subtractive_color_synthesis_CMYK.jpg), Wikimedia Commons, CC BY-SA 4.0]{.small}
 
 # Images in memory
 
